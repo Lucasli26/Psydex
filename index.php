@@ -33,24 +33,28 @@ try {
   <!-- Enlace a Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
-        *{
-            /* border: solid 1px black; */
-            /* color: white; */
-            text-align: center;
-        }
-        .vertical-line {
-            border-left: 1px solid white; /* Línea vertical blanca */
-            height: 100%;
-        }
-        #container{
-            /* border: solid 5px blue; */
-            border-radius: 15px;
-        }
-        .fotoLogo{
-          height: auto;
-          width: 75px;
-        }
-    </style>
+    * {
+      /* border: solid 1px black; */
+      /* color: white; */
+      text-align: center;
+    }
+
+    .vertical-line {
+      border-left: 1px solid white;
+      /* Línea vertical blanca */
+      height: 100%;
+    }
+
+    #container {
+      /* border: solid 5px blue; */
+      border-radius: 15px;
+    }
+
+    .fotoLogo {
+      height: auto;
+      width: 75px;
+    }
+  </style>
 </head>
 
 <body class="bg-dark text-center  d-flex flex-column align-items-center">
@@ -61,8 +65,13 @@ try {
     <div class="col-4"></div>
   </div>
 
-  <div class="container">
-  
+  <!-- Campo de búsqueda -->
+  <div class="input-group col-4 mb-3">
+      <input type="text" id="searchInput" class="form-control" placeholder="Buscar Pokémon por nombre">
+      <button class="btn btn-danger" id="searchButton">Buscar</button>
+  </div>
+
+  <div class="container col-12">
     <div id="pokemon-container" class="row justify-content-center"></div>
 
     <div id="pagination" class="mt-4"></div>

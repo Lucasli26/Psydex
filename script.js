@@ -12,13 +12,6 @@ function clearContainer(container) {
     }
 }
 
-// itemsPerPageSelect.addEventListener("change", (event) => {
-//     itemsPerPage = parseInt(event.target.value);
-//     currentPage = 1;
-//     fetchPokemon(currentPage);
-// });
-
-
 async function fetchPokemon(page) {
     const offset = (page - 1) * itemsPerPage;
     const url = `https://pokeapi.co/api/v2/pokemon?limit=${itemsPerPage}&offset=${offset}`;
@@ -41,12 +34,6 @@ async function displayPokemon(pokemonList) {
         try {
             const response = await fetch(pokemon.url);
             const pokemonData = await response.json();
-
-            // Crear el contenedor principal de la carta
-            // const pokemonElement = document.createElement("div");
-            // pokemonElement.className = "pokemon-item col-12 col-md-4 col-lg-3 bg-white rounded shadow-sm text-center m-3 d-flex";
-            // pokemonElement.style.border = "1px solid #ccc";
-            // pokemonElement.style.position = "relative";
 
             // Crear el contenedor principal de la carta
             const pokemonElement = document.createElement("div");
@@ -86,8 +73,6 @@ async function displayPokemon(pokemonList) {
             // Crear contenedor para la parte derecha (tipos y habilidades)
             const rightColumn = document.createElement("div");
             rightColumn.className = "col-6 text-start mr-3";
-
-            
             
             // Título de habilidades
             const abilitiesTitle = document.createElement("p");
