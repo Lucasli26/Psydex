@@ -1,78 +1,75 @@
+<?php
+session_start();
+//Conexion con la base de datos
+$cadena_conexion = "mysql:dbname=psydex;host=127.0.0.1";
+$usuario = "root";
+$clave = "";
+
+try {
+  $db = new PDO($cadena_conexion, $usuario, $clave);
+
+  if (isset($_SESSION["id"])) {
+    $sqlLog = "SELECT * FROM usuarios where id = ?";
+    $usu = $db->prepare($sqlLog);
+    $usu->execute([$_SESSION["id"]]);
+    $usuario = $usu->fetch();
+  } else {
+    echo "No se a iniciado sesion";
+  }
+} catch (PDOException $e) {
+  echo "Error con la base de datos: " . $e->getMessage();
+}
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pokedex con Paginación</title>
+  <!-- Enlace a Bootstrap -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <style>
-    body {
-      background-color: #87CEEB;
-      font-family: Arial, sans-serif;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      color: #333;
-    }
-
-    #pokemon-container {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      margin-top: 20px;
-    }
-
-    .pokemon-item {
-      background-color: #fff;
-      padding: 15px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      text-align: center;
-      font-weight: bold;
-      text-transform: capitalize;
-    }
-
-    #pagination {
-      margin-top: 20px;
-    }
-
-    .pagination-button {
-      margin: 0 5px;
-      padding: 8px 12px;
-      background-color: #333;
-      color: #fff;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      font-size: 1em;
-    }
-
-    .pagination-button.active {
-      background-color: #ffcb05;
-      color: #333;
-      font-weight: bold;
-    }
-
-    #itemsPerPageSelect {
-      margin-top: 15px;
-      font-size: 1em;
-      padding: 5px;
-    }
-  </style>
+        *{
+            /* border: solid 1px black; */
+            /* color: white; */
+            text-align: center;
+        }
+        .vertical-line {
+            border-left: 1px solid white; /* Línea vertical blanca */
+            height: 100%;
+        }
+        #container{
+            /* border: solid 5px blue; */
+            border-radius: 15px;
+        }
+        .fotoLogo{
+          height: auto;
+          width: 75px;
+        }
+    </style>
 </head>
-<body>
-  <h1>Pokedex</h1>
 
-  <label for="itemsPerPageSelect">Pokémon por página:</label>
-  <select id="itemsPerPageSelect">
-    <option value="10">10</option>
-    <option value="20">20</option>
-    <option value="50">50</option>
-  </select>
+<body class="bg-dark text-center  d-flex flex-column align-items-center">
 
-  <div id="pokemon-container"></div>
+  <div class="header col-12">
+    <div class="col-4"></div>
+    <img id="fotoLogo" class="m-3" src="./img/Psydex.png" alt="Psydex">
+    <div class="col-4"></div>
+  </div>
 
-  <div id="pagination"></div>
+  <div class="container">
+  
+    <div id="pokemon-container" class="row justify-content-center"></div>
 
+    <div id="pagination" class="mt-4"></div>
+  </div>
+
+  <!-- Enlace a tu script JavaScript -->
   <script src="script.js"></script>
 </body>
+
 </html>

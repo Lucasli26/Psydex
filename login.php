@@ -74,7 +74,6 @@ catch(PDOException $e){
                             session_start(); 
                             $_SESSION["usu"] = $users["nombre"];
                             $_SESSION["usuEmail"] = $users["email"];
-                            $_SESSION["eur"] = $users["dinero"];
                             $_SESSION["id"] = $users["id"];
                             header("Location: index.php");
                         }
