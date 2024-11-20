@@ -1,0 +1,7 @@
+@font-face {
+    font-family: 'Retro_Pokemon';
+    src: url(./Pokemon_Classic.ttf);
+}
+*{
+    font-family: 'Retro_Pokemon';
+}

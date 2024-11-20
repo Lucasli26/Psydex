@@ -1,6 +1,6 @@
 <?php
 
-include("./conexion.php");
+include("./php/conexion.php");
 
 try {
     $db = new PDO($cadena_conexion, $usuario, $clave);
@@ -25,7 +25,7 @@ try {
         $stmt->execute();
 
         // Redirigir al inicio de sesión después del registro
-        header("Location: login.php");
+        header("Location: ./login.php");
         exit();
     }
 
@@ -43,7 +43,7 @@ try {
     <title>Psydex - Registro</title>
     <!-- Estilos Bootstrap -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="icon" href="../img/Psydex.png" type="image/png">
+    <link rel="icon" href="./img/Psydex.png" type="image/png">
     <style>
         *{
             /* border: solid 1px black; */
@@ -60,7 +60,7 @@ try {
     </style>
 </head>
 <body class="bg-dark container-fluid d-flex justify-content-center align-items-center flex-column vh-100">
-    <img class="mb-4 mx-auto" src="../img/Psydex.png" alt="Psydex">
+    <img class="mb-4 mx-auto" src="./img/Psydex.png" alt="Psydex">
     <main class="col-7">
         <div id="container" class="row bg-danger d-flex justify-content-around align-items-center p-3">
             <div class="col-12">
