@@ -1,9 +1,6 @@
 <?php
-session_start();
-//Conexion con la base de datos
-$cadena_conexion = "mysql:dbname=psydex;host=127.0.0.1";
-$usuario = "root";
-$clave = "";
+
+include("./php/conexion.php");
 
 try {
   $db = new PDO($cadena_conexion, $usuario, $clave);
@@ -32,6 +29,7 @@ try {
   <title>Pokedex con Paginación</title>
   <!-- Enlace a Bootstrap -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="icon" href="./img/Psydex.png" type="image/png">
   <style>
     * {
       /* border: solid 1px black; */
@@ -60,16 +58,21 @@ try {
 <body class="bg-dark text-center  d-flex flex-column align-items-center">
 
   <div class="header col-12">
-    <div class="col-4"></div>
+    <div class="col-4">
+      <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="currentColor" class="bi bi-door-open-fill text-danger" viewBox="0 0 16 16">
+        <path d="M1.5 15a.5.5 0 0 0 0 1h13a.5.5 0 0 0 0-1H13V2.5A1.5 1.5 0 0 0 11.5 1H11V.5a.5.5 0 0 0-.57-.495l-7 1A.5.5 0 0 0 3 1.5V15zM11 2h.5a.5.5 0 0 1 .5.5V15h-1zm-2.5 8c-.276 0-.5-.448-.5-1s.224-1 .5-1 .5.448.5 1-.224 1-.5 1"/>
+      </svg>
+    </div>
     <img id="fotoLogo" class="m-3" src="./img/Psydex.png" alt="Psydex">
     <div class="col-4"></div>
   </div>
 
-  <!-- Campo de búsqueda -->
-  <div class="input-group col-4 mb-3">
-      <input type="text" id="searchInput" class="form-control" placeholder="Buscar Pokémon por nombre">
-      <button class="btn btn-danger" id="searchButton">Buscar</button>
+  <!-- Buscador de Pokémon -->
+  <div class="search-container my-3 col-4 text-center">
+      <input type="text" id="pokemon-search-input" placeholder="Buscar Pokémon por nombre" class="form-control w-50 mx-auto">
+      <button id="pokemon-search-button" class="btn btn-primary mt-2">Buscar</button>
   </div>
+
 
   <div class="container col-12">
     <div id="pokemon-container" class="row justify-content-center"></div>
@@ -77,8 +80,11 @@ try {
     <div id="pagination" class="mt-4"></div>
   </div>
 
-  <!-- Enlace a tu script JavaScript -->
-  <script src="script.js"></script>
+<!-- Archivo principal de JavaScript -->
+<script src="./script.js"></script>
+<!-- Archivo de búsqueda de JavaScript -->
+<script src="./buscador.js"></script>
+
 </body>
 
 </html>
