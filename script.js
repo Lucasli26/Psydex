@@ -1,14 +1,30 @@
 let itemsPerPage = 9;
 let currentPage = 1;
+let allPokemon = []; // Lista de todos los Pokémon para autocompletado
 
 const pokemonContainer = document.getElementById("pokemon-container");
 const paginationContainer = document.getElementById("pagination");
-const itemsPerPageSelect = document.getElementById("itemsPerPageSelect");
+const searchInput = document.getElementById("searchInput");
+const searchButton = document.getElementById("searchButton");
+const clearSearchButton = document.getElementById("clearSearchButton");
+const autocompleteContainer = document.getElementById("autocomplete-container"); // Contenedor para las sugerencias
 
-// Función para limpiar el contenedor de Pokémon de forma más estricta
+// Función para limpiar el contenedor de Pokémon
 function clearContainer(container) {
     while (container.firstChild) {
         container.removeChild(container.firstChild);
+    }
+}
+
+// Obtener todos los Pokémon para autocompletado
+async function fetchAllPokemon() {
+    const url = `https://pokeapi.co/api/v2/pokemon?limit=10000&offset=0`; // Obtiene todos los Pokémon
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        allPokemon = data.results; // Guardar la lista completa
+    } catch (error) {
+        console.error("Error al obtener la lista completa de Pokémon:", error);
     }
 }
 
@@ -26,24 +42,37 @@ async function fetchPokemon(page) {
     }
 }
 
+async function fetchPokemonByNameOrId(searchTerm) {
+    const url = `https://pokeapi.co/api/v2/pokemon/${searchTerm.toLowerCase()}`;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Pokémon no encontrado");
+        }
+        const pokemonData = await response.json();
+        displayPokemon([pokemonData]);
+        paginationContainer.innerHTML = "";
+    } catch (error) {
+        console.error("Error al buscar Pokémon:", error);
+        pokemonContainer.innerHTML = `<p class="text-center text-danger">No se encontró el Pokémon "${searchTerm}". Por favor, intente con otro nombre o ID.</p>`;
+        paginationContainer.innerHTML = "";
+    }
+}
+
 async function displayPokemon(pokemonList) {
-    // Limpiar el contenedor de Pokémon
-    pokemonContainer.innerHTML = "";
+    clearContainer(pokemonContainer);
 
     for (const pokemon of pokemonList) {
         try {
-            const response = await fetch(pokemon.url);
+            const response = pokemon.url ? await fetch(pokemon.url) : { json: () => pokemon };
             const pokemonData = await response.json();
 
-            // Crear el contenedor principal de la carta
             const pokemonElement = document.createElement("div");
             pokemonElement.className = "pokemon-item col-12 col-md-4 col-lg-3 bg-white rounded shadow-sm text-center m-3 d-flex align-items-center justify-content-center";
             pokemonElement.style.border = "1px solid #ccc";
             pokemonElement.style.position = "relative";
-            pokemonElement.style.height = "200px"; // Altura fija opcional para centrar verticalmente
-            // pokemonElement.style.width = "250px";
+            pokemonElement.style.height = "250px";
 
-            // Mostrar número de Pokédex en la esquina superior izquierda
             const pokedexNumber = document.createElement("span");
             pokedexNumber.textContent = `#${pokemonData.id}`;
             pokedexNumber.className = "badge bg-dark text-white position-absolute";
@@ -51,58 +80,41 @@ async function displayPokemon(pokemonList) {
             pokedexNumber.style.left = "10px";
             pokemonElement.appendChild(pokedexNumber);
 
-            // Crear contenedor para la parte izquierda (imagen y nombre)
             const leftColumn = document.createElement("div");
             leftColumn.className = "col-6 text-center";
 
-            // Imagen del Pokémon
             const sprite = document.createElement("img");
             sprite.src = pokemonData.sprites.front_default;
-            sprite.alt = pokemon.name;
+            sprite.alt = pokemonData.name;
             sprite.className = "img-fluid mb-2";
             sprite.style.maxWidth = "100px";
 
-            // Nombre del Pokémon
             const name = document.createElement("p");
-            name.textContent = pokemon.name;
+            name.textContent = pokemonData.name;
             name.className = "text-capitalize font-weight-bold";
 
             leftColumn.appendChild(sprite);
             leftColumn.appendChild(name);
 
-            // Crear contenedor para la parte derecha (tipos y habilidades)
             const rightColumn = document.createElement("div");
             rightColumn.className = "col-6 text-start mr-3";
-            
-            // Título de habilidades
+
             const abilitiesTitle = document.createElement("p");
             abilitiesTitle.textContent = "Abilities:";
             abilitiesTitle.className = "mb-1 font-weight-bold";
             rightColumn.appendChild(abilitiesTitle);
 
-            // Listar habilidades con primera letra en mayúscula
-            pokemonData.abilities.forEach((abilityInfo, index) => {
+            pokemonData.abilities.forEach((abilityInfo) => {
                 const abilityText = document.createElement("p");
                 abilityText.className = "mb-1 font-weight-bold";
-
-                // Transformar el nombre de la habilidad para que la primera letra esté en mayúscula
                 const abilityName = capitalizeFirstLetter(abilityInfo.ability.name);
-
-                // Verificar si es una habilidad oculta
-                if (abilityInfo.is_hidden) {
-                    abilityText.textContent = `${abilityName}`;
-                } else {
-                    abilityText.textContent = `${abilityName}`;
-                }
-
+                abilityText.textContent = `${abilityName}`;
                 rightColumn.appendChild(abilityText);
             });
-            
-            // Añadir tipos usando la función displayTypes
-            const typesContainer = displayTypes(pokemonData.types); // Obtiene el contenedor de tipos
+
+            const typesContainer = displayTypes(pokemonData.types);
             rightColumn.appendChild(typesContainer);
 
-            // Añadir ambas columnas a la carta del Pokémon
             pokemonElement.appendChild(leftColumn);
             pokemonElement.appendChild(rightColumn);
             pokemonContainer.appendChild(pokemonElement);
@@ -113,34 +125,26 @@ async function displayPokemon(pokemonList) {
     }
 }
 
-// Función para capitalizar la primera letra de una cadena de texto
 function capitalizeFirstLetter(text) {
     return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
-// Nueva función para mostrar los tipos de un Pokémon
 function displayTypes(types) {
-    // Crear un contenedor para las imágenes de tipo
     const typesContainer = document.createElement("div");
     typesContainer.className = "d-flex justify-content-center mt-2";
 
-    // Recorrer cada tipo y añadir la imagen correspondiente
-    types.forEach(typeInfo => {
-        const typeName = typeInfo.type.name; // Obtener el nombre del tipo
+    types.forEach((typeInfo) => {
+        const typeName = typeInfo.type.name;
         const typeImage = document.createElement("img");
-        typeImage.src = `./img/${typeName}.png`; // Ruta de la imagen del tipo
+        typeImage.src = `./img/${typeName}.png`;
         typeImage.alt = typeName;
-        typeImage.className = "type-icon mb-1"; // Estilo Bootstrap para margen
-        typeImage.style.maxWidth = "75px"; // Tamaño de la imagen del tipo
-
-        // Añadir la imagen del tipo al contenedor
+        typeImage.className = "type-icon mb-1";
+        typeImage.style.maxWidth = "75px";
         typesContainer.appendChild(typeImage);
     });
 
-    return typesContainer; // Devolver el contenedor de tipos
+    return typesContainer;
 }
-
-
 
 function displayPagination(totalItems) {
     paginationContainer.innerHTML = "";
@@ -183,5 +187,44 @@ function displayPagination(totalItems) {
     }
 }
 
-// Llama a fetchPokemon una vez
+// Autocompletado
+searchInput.addEventListener("input", () => {
+    const searchTerm = searchInput.value.toLowerCase().trim();
+    clearContainer(autocompleteContainer);
+
+    if (searchTerm.length === 0) {
+        return;
+    }
+
+    const suggestions = allPokemon.filter(pokemon => pokemon.name.startsWith(searchTerm));
+    suggestions.slice(0, 5).forEach((pokemon) => {
+        const suggestionItem = document.createElement("div");
+        suggestionItem.textContent = pokemon.name;
+        suggestionItem.className = "autocomplete-item p-2 bg-light border";
+        suggestionItem.addEventListener("click", () => {
+            searchInput.value = pokemon.name;
+            fetchPokemonByNameOrId(pokemon.name);
+            clearContainer(autocompleteContainer);
+        });
+        autocompleteContainer.appendChild(suggestionItem);
+    });
+});
+
+searchButton.addEventListener("click", () => {
+    const searchTerm = searchInput.value.trim();
+    if (searchTerm) {
+        fetchPokemonByNameOrId(searchTerm);
+        clearContainer(autocompleteContainer);
+    }
+});
+
+clearSearchButton.addEventListener("click", () => {
+    searchInput.value = "";
+    currentPage = 1;
+    fetchPokemon(currentPage);
+    clearContainer(autocompleteContainer);
+});
+
+// Inicializa la lista completa de Pokémon y la paginación
+fetchAllPokemon();
 fetchPokemon(currentPage);

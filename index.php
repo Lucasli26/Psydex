@@ -79,12 +79,13 @@ try {
 </div>
 
 
-<!-- Buscador de Pokémon -->
-<div class="search-container my-3 col-12 d-flex flex-column flex-sm-row align-items-center justify-content-center">
-    <div class="d-flex flex-column flex-sm-row align-items-center justify-content-center w-100" style="max-width: 600px;">
-        <input type="text" id="pokemon-search-input" placeholder="Buscar Pokémon por nombre" class="form-control mb-2 mb-sm-0 w-100">
-        <button id="pokemon-search-button" class="btn btn-danger w-50 w-sm-auto ml-sm-2">Buscar</button>
-    </div>
+<div class="d-flex-search-container">
+  <div class="d-flex">
+    <input id="searchInput" type="text" class="form-control search-input" placeholder="Buscar Pokémon por nombre o ID">
+    <button id="searchButton" class="btn btn-primary ms-2">Buscar</button>
+    <button id="clearSearchButton" class="btn btn-secondary ms-2">Limpiar</button>
+  </div>
+  <div id="autocomplete-container"></div>
 </div>
 
 
