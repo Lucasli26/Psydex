@@ -2,6 +2,30 @@
     font-family: 'Retro_Pokemon';
     src: url(./Pokemon_Classic.ttf);
 }
-*{
+* {
+    /* border: solid 1px black; */
+    /* color: white; */
+    text-align: center;
     font-family: 'Retro_Pokemon';
-}
+  }
+
+  .vertical-line {
+    border-left: 1px solid white;
+    /* Línea vertical blanca */
+    height: 100%;
+  }
+
+  #container {
+    /* border: solid 5px blue; */
+    border-radius: 15px;
+  }
+
+  #fotoLogo { 
+    min-width: 75px;
+  }
+  a{
+    font-size: 25px;
+  }
+  #pokemon-search-input{
+    font-size: 11px;
+  }

@@ -72,6 +72,8 @@ async function displayPokemon(pokemonList) {
             pokemonElement.style.border = "1px solid #ccc";
             pokemonElement.style.position = "relative";
             pokemonElement.style.height = "250px";
+            pokemonElement.style.cursor = "pointer";
+
 
             const pokedexNumber = document.createElement("span");
             pokedexNumber.textContent = `#${pokemonData.id}`;
@@ -114,6 +116,11 @@ async function displayPokemon(pokemonList) {
 
             const typesContainer = displayTypes(pokemonData.types);
             rightColumn.appendChild(typesContainer);
+
+            // Agregar el evento `click` al contenedor para redirigir a la página de detalles.
+            pokemonElement.addEventListener("click", () => {
+                window.location.href = `pokemonDatos.php?name=${pokemon.name}`;
+            });
 
             pokemonElement.appendChild(leftColumn);
             pokemonElement.appendChild(rightColumn);
