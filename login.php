@@ -1,9 +1,14 @@
 <?php
 
+// Verificar si el usuario ya está logueado
+if (isset($_SESSION["id"])) {
+    header("Location: index.php");  // Redirige al usuario si ya está logueado
+    exit;  // Asegúrate de usar exit para evitar que el script siga ejecutándose
+}
 include("./php/conexion.php");
 include("./php/comprobar_login.php");
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">

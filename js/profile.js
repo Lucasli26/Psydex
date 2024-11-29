@@ -92,6 +92,9 @@ function renderTeams(teamsData) {
     const teamContainer = document.getElementById("team-previews");
     if (!teamsData || !Array.isArray(teamsData)) return;
 
+    // Limpiar contenedor de equipos antes de agregar nuevos equipos
+    teamContainer.innerHTML = '';
+
     const groupedTeams = teamsData.reduce((groups, item) => {
         const teamId = item.equipo_name; // Agrupar por nombre de equipo
         if (!groups[teamId]) groups[teamId] = [];
@@ -101,11 +104,11 @@ function renderTeams(teamsData) {
 
     for (const [teamName, pokemons] of Object.entries(groupedTeams)) {
         const teamDiv = document.createElement("div");
-        teamDiv.classList.add("team-preview", "m-2", "p-3", "border", "rounded", "bg-light", "d-flex", "flex-column", "align-items-center");
+        teamDiv.classList.add("team-preview", "m-2", "p-3", "border", "rounded", "bg-light", "d-flex", "flex-column", "align-items-center", "w-25");
 
         // Crear el nombre del equipo
         const teamNameDiv = document.createElement("div");
-        teamNameDiv.classList.add("team-name", "mb-3");
+        teamNameDiv.classList.add("team-name", "mb-3", "text-center");
         teamNameDiv.textContent = teamName;
         teamDiv.appendChild(teamNameDiv);
 
@@ -113,21 +116,34 @@ function renderTeams(teamsData) {
         const pokemonContainer = document.createElement("div");
         pokemonContainer.classList.add("pokemon-container", "d-flex", "flex-wrap", "justify-content-center");
 
-        // Mostrar los Pokémon del equipo
-        pokemons.forEach(pokemon => {
-            const img = document.createElement("img");
-            img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`;
-            img.alt = pokemon.pokemon_id;
-            img.classList.add("m-1", "pokemon-img");
-            pokemonContainer.appendChild(img);
-        });
+        // Mostrar los Pokémon del equipo solo si hay
+        if (pokemons.length > 0) {
+            pokemons.forEach(pokemon => {
+                if (pokemon.pokemon_id) {
+                    const img = document.createElement("img");
+                    img.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.pokemon_id}.png`;
+                    img.alt = pokemon.pokemon_id;
+                    img.classList.add("m-1", "pokemon-img");
+                    pokemonContainer.appendChild(img);
+                }
+            });
+        }
+
+        // Si no tiene Pokémon, solo mostrar el nombre del equipo
+        if (pokemons.length === 0) {
+            const noPokemonMessage = document.createElement("p");
+            noPokemonMessage.classList.add("text-warning");
+            noPokemonMessage.textContent = "No hay Pokémon en este equipo";
+            pokemonContainer.appendChild(noPokemonMessage);
+        }
 
         teamDiv.appendChild(pokemonContainer);
 
-        // Agregar todo el equipo al contenedor principal
+        // Agregar el equipo al contenedor principal
         teamContainer.appendChild(teamDiv);
     }
 }
+
 
 
 // Ejecutar al cargar
