@@ -13,15 +13,7 @@ if (pokemonName) {
         })
         .then((pokemonData) => {
             mostrarDetallesAside(pokemonData); // Mostrar en el aside
-            mostrarTablaObjetos(pokemonData); // Mostrar la tabla de objetos sostenidos
-
-            const speciesUrl = pokemonData.species.url; // Obtener la URL de la especie
-            // Llamar a la función correcta para obtener la cadena evolutiva
-            fetch(speciesUrl)
-                .then((response) => response.json())
-                .then((speciesData) => {
-                    mostrarLineaEvolutiva(speciesData.evolution_chain.url);
-                });
+            mostrarFormasAlternas(pokemonData); // Mostrar formas alternas
         })
         .catch((error) => {
             console.error(error);
@@ -72,75 +64,159 @@ function mostrarDetallesAside(pokemon) {
         `${capitalizarPrimeraLetra(a.ability.name)}${a.is_hidden ? " (Hidden)" : ""}` // Reemplazado aquí
     ).join("<br>")}`;
 
-    // Agregar elementos al aside
+    // Agregar sprite, tipos y habilidades
     asideContainer.appendChild(spriteContainer);
     asideContainer.appendChild(typesContainer);
     asideContainer.appendChild(abilities);
+
+    // Mostrar objetos por generación
+    mostrarObjetosPorGeneracion(pokemon, asideContainer);
 }
 
-// Función para capitalizar la primera letra de un string
-function capitalizarPrimeraLetra(cadena) {
-    return cadena.charAt(0).toUpperCase() + cadena.slice(1);
-}
-
-// Función para mostrar la tabla de objetos sostenidos
-function mostrarTablaObjetos(pokemon) {
-    const tabla = document.getElementById("tabla-objetos").querySelector("tbody");
-    tabla.innerHTML = ""; // Limpiar tabla existente
-
-    const versionAGeneracion = {
-        "red-blue": 1,
+// Función para mostrar objetos por generación
+function mostrarObjetosPorGeneracion(pokemon, asideContainer) {
+    const generaciones = {
+        "red": 1,
+        "blue": 1,
         "yellow": 1,
-        "gold-silver": 2,
-        "crystal": 2,
-        "ruby-sapphire": 3,
+        "firered": 1,
+        "leafgreen": 1,
+        "gold": 2,
+        "silver": 2,
+        "heartgold": 2,
+        "soulsilver": 2,
+        "ruby": 3,
+        "sapphire": 3,
         "emerald": 3,
-        "firered-leafgreen": 3,
-        "diamond-pearl": 4,
+        "omega-ruby": 3,
+        "alpha-sapphire": 3,
+        "diamond": 4,
+        "pearl": 4,
         "platinum": 4,
-        "heartgold-soulsilver": 4,
-        "black-white": 5,
-        "black-2-white-2": 5,
-        "x-y": 6,
-        "omega-ruby-alpha-sapphire": 6,
-        "sun-moon": 7,
-        "ultra-sun-ultra-moon": 7,
-        "sword-shield": 8,
+        "black": 5,
+        "white": 5,
+        "black-2": 5,
+        "white-2": 5,
+        "x": 6,
+        "y": 6,
+        "sun": 7,
+        "moon": 7,
+        "ultra-sun": 7,
+        "ultra-moon": 7,
+        "sword": 8,
+        "shield": 8,
+        "scarlet": 7,
+        "violet": 7,
     };
 
-    // Iterar sobre los objetos sostenidos
+    const objetosContainer = document.createElement("div");
+    objetosContainer.classList.add("mt-4");
+
+    const objetosPorGeneracion = {};
+
     pokemon.held_items.forEach((item) => {
-        const fila = document.createElement("tr");
-
-        // Columna del nombre del objeto con sprite
-        const celdaObjeto = document.createElement("td");
-        const sprite = document.createElement("img");
-        sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.item.name}.png`;
-        sprite.alt = item.item.name;
-        sprite.style.width = "32px";
-        sprite.style.height = "32px";
-        celdaObjeto.appendChild(sprite);
-        celdaObjeto.appendChild(document.createTextNode(` ${capitalizarPrimeraLetra(item.item.name)}`));
-        fila.appendChild(celdaObjeto);
-
-        // Inicializar un array con columnas vacías para cada generación
-        const celdasGeneraciones = Array(8).fill(null).map(() => document.createElement("td"));
-
-        // Procesar las versiones para encontrar las generaciones y porcentajes
-        item.version_details.forEach((detalle) => {
-            const version = detalle.version.name;
-            const generacion = versionAGeneracion[version];
-
+        item.version_details.forEach((versionDetail) => {
+            const generacion = generaciones[versionDetail.version.name];
             if (generacion) {
-                const celda = celdasGeneraciones[generacion - 1];
-                celda.textContent = `${detalle.rarity}%`;
+                if (!objetosPorGeneracion[generacion]) {
+                    objetosPorGeneracion[generacion] = {};
+                }
+
+                if (objetosPorGeneracion[generacion][item.item.name]) {
+                    if (objetosPorGeneracion[generacion][item.item.name].porcentaje < versionDetail.rarity) {
+                        objetosPorGeneracion[generacion][item.item.name].porcentaje = versionDetail.rarity;
+                    }
+                } else {
+                    objetosPorGeneracion[generacion][item.item.name] = {
+                        nombre: item.item.name,
+                        porcentaje: versionDetail.rarity,
+                    };
+                }
             }
         });
-
-        // Agregar las celdas al resto de las columnas de la fila
-        celdasGeneraciones.forEach((celda) => fila.appendChild(celda));
-
-        // Agregar la fila completa a la tabla
-        tabla.appendChild(fila);
     });
+
+    for (const [generacion, objetos] of Object.entries(objetosPorGeneracion)) {
+        const generacionTitulo = document.createElement("p");
+        generacionTitulo.textContent = `Generación ${generacion}`;
+        generacionTitulo.style.fontWeight = "bold";
+        generacionTitulo.style.fontSize = "20px";
+        generacionTitulo.classList.add("mt-3");
+
+        const listaObjetos = document.createElement("ul");
+        listaObjetos.classList.add("list-unstyled");
+
+        for (const objetoKey in objetos) {
+            const objeto = objetos[objetoKey];
+            const itemLista = document.createElement("li");
+            itemLista.style.fontSize = "14px";
+
+            const sprite = document.createElement("img");
+            sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${objeto.nombre}.png`;
+            sprite.alt = objeto.nombre;
+            sprite.style.width = "32px";
+            sprite.style.height = "32px";
+
+            const texto = document.createTextNode(` ${capitalizarPrimeraLetra(objeto.nombre)}: ${Math.min(100, objeto.porcentaje)}%`);
+
+            itemLista.appendChild(sprite);
+            itemLista.appendChild(texto);
+
+            listaObjetos.appendChild(itemLista);
+        }
+
+        objetosContainer.appendChild(generacionTitulo);
+        objetosContainer.appendChild(listaObjetos);
+    }
+
+    asideContainer.appendChild(objetosContainer);
+}
+
+// Función para mostrar las formas alternas del Pokémon
+function mostrarFormasAlternas(pokemon) {
+    const pokeFormas = `https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}/varieties`;
+
+    fetch(pokeFormas)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos de las variedades');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Filtrar las variedades para eliminar la que coincide con el nombre del Pokémon actual
+            const formasAlternas = data.results.filter(forma => forma.name !== pokemon.name); // Eliminar la forma principal
+
+            if (formasAlternas.length > 0) {
+                const formasContainer = document.getElementById("pokemon-form");
+                formasContainer.innerHTML = "";
+
+                const tituloFormas = document.createElement("h4");
+                tituloFormas.textContent = "Formas Alternas:";
+                formasContainer.appendChild(tituloFormas);
+
+                formasAlternas.forEach(forma => {
+                    const formaNombre = document.createElement("p");
+
+                    const enlace = document.createElement("a");
+                    enlace.href = `?name=${forma.name}`;
+                    enlace.textContent = capitalizarPrimeraLetra(forma.name);
+                    enlace.style.cursor = "pointer";
+                    formaNombre.appendChild(enlace);
+
+                    formasContainer.appendChild(formaNombre);
+                });
+            } else {
+                const noFormas = document.createElement("p");
+                noFormas.textContent = "Este Pokémon no tiene formas alternas.";
+                document.getElementById("pokemon-form").appendChild(noFormas);
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar las formas alternas:', error);
+        });
+}
+
+function capitalizarPrimeraLetra(cadena) {
+    return cadena.charAt(0).toUpperCase() + cadena.slice(1);
 }

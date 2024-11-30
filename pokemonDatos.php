@@ -37,25 +37,14 @@
             width: 70px;
             height: 30px;
         }
-
-        .evolution-chain img {
-            width: 100px;
-            margin: 5px;
+        
+        #pokemon-form {
+            max-height: 500px;  /* Ajusta la altura según sea necesario */
+            overflow-y: auto;   /* Esto permite que el contenido se desplace si es muy grande */
+            padding: 10px;
+            text-align: center; /* Opcional: centra el contenido */
         }
 
-        .evolution-chain {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .evolution-chain p {
-            text-align: center;
-            margin-top: 10px;
-        }
-        table{
-            font-size: 0.75rem;
-        }
     </style>
 </head>
 
@@ -73,35 +62,15 @@
                 </div>
             </div>
         </section>
-        <!-- Aside para mostrar el ícono del Pokémon, tipos y habilidades -->
-        <aside class="col-md-4 col-12 bg-danger mt-5 mr-5 p-3 d-flex flex-column align-items-center text-dark">
-            <div id="pokemon-aside" class="text-center">
+        <!-- Aside para mostrar los datos del Pokémon -->
+        <aside class="col-md-4 col-12 bg-danger mt-5 mr-5 p-3 d-flex flex-column text-dark">
+            <div id="pokemon-aside" class="col-6 text-center">
                 <!-- Aquí se insertarán los datos desde JavaScript -->
             </div>
-
-            <!-- Tabla para mostrar los objetos sostenidos por generaciones -->
-            <div id="objetos-sostenidos" class="mt-4">
-                <p>Held items:</p>
-                <table id="tabla-objetos" class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Objeto</th>
-                            <th>I</th>
-                            <th>II</th>
-                            <th>III</th>
-                            <th>IV</th>
-                            <th>V</th>
-                            <th>VI</th>
-                            <th>VII</th>
-                            <th>VIII</th>
-                            <th>IX</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Las filas de la tabla se llenarán dinámicamente -->
-                    </tbody>
-                </table>
+            <div id="pokemon-form" class="col-6 text-center">
+                <!-- Aquí se insertarán las formas desde JavaScript -->
             </div>
+
         </aside>
     </main>
 
