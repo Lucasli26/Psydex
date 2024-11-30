@@ -1,9 +1,3 @@
-<?php
-
-?>
-<?php
-// Aquí va tu código PHP si es necesario
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,7 +21,7 @@
             padding: 0;
         }
 
-        aside{
+        aside {
             border-radius: 5px;
         }
 
@@ -59,6 +53,9 @@
             text-align: center;
             margin-top: 10px;
         }
+        table{
+            font-size: 0.75rem;
+        }
     </style>
 </head>
 
@@ -66,28 +63,47 @@
 
     <?php include("./php/cabezera.php"); ?>
 
-    <div class="d-flex">
-        <main class="container-fluid d-flex justify-content-center p-0">
-            <!-- Section para el contenido principal -->
-            <section class="col-md-8 col-12 p-3">
-                <div id="pokemon-info">
-                    <!-- <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quae atque ullam iste excepturi itaque accusantium dolore, possimus ipsum quaerat expedita nam perspiciatis ab cumque non repudiandae animi? Molestiae, est ullam.</p> -->
-
-                    <!-- Aquí agregamos la línea evolutiva -->
-                    <div id="evolution-chain" class="evolution-chain">
-                        <!-- Aquí se insertarán las imágenes de la evolución desde JavaScript -->
-                    </div>
+    <main class="container-fluid d-flex justify-content-center p-0">
+        <!-- Section para el contenido principal -->
+        <section class="col-md-8 col-12 p-3">
+            <div id="pokemon-info">
+                <!-- Aquí agregamos la línea evolutiva -->
+                <div id="evolution-chain" class="evolution-chain">
+                    <!-- Aquí se insertarán las imágenes de la evolución desde JavaScript -->
                 </div>
-            </section>
-        </main>
-
+            </div>
+        </section>
         <!-- Aside para mostrar el ícono del Pokémon, tipos y habilidades -->
-        <aside class="col-md-4 col-12 bg-danger mt-5 p-3 d-flex flex-column align-items-center text-dark">
+        <aside class="col-md-4 col-12 bg-danger mt-5 mr-5 p-3 d-flex flex-column align-items-center text-dark">
             <div id="pokemon-aside" class="text-center">
                 <!-- Aquí se insertarán los datos desde JavaScript -->
             </div>
+
+            <!-- Tabla para mostrar los objetos sostenidos por generaciones -->
+            <div id="objetos-sostenidos" class="mt-4">
+                <p>Held items:</p>
+                <table id="tabla-objetos" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Objeto</th>
+                            <th>I</th>
+                            <th>II</th>
+                            <th>III</th>
+                            <th>IV</th>
+                            <th>V</th>
+                            <th>VI</th>
+                            <th>VII</th>
+                            <th>VIII</th>
+                            <th>IX</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Las filas de la tabla se llenarán dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
         </aside>
-    </div>
+    </main>
 
 </body>
 

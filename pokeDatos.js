@@ -13,6 +13,8 @@ if (pokemonName) {
         })
         .then((pokemonData) => {
             mostrarDetallesAside(pokemonData); // Mostrar en el aside
+            mostrarTablaObjetos(pokemonData); // Mostrar la tabla de objetos sostenidos
+
             const speciesUrl = pokemonData.species.url; // Obtener la URL de la especie
             // Llamar a la función correcta para obtener la cadena evolutiva
             fetch(speciesUrl)
@@ -66,112 +68,79 @@ function mostrarDetallesAside(pokemon) {
 
     // Habilidades
     const abilities = document.createElement("p");
-    abilities.innerHTML = `Habilidades: <br> ${pokemon.abilities.map((a) => 
-        `${capitalizarPrimeraLetra(a.ability.name)}${a.is_hidden ? " (Oculta)" : ""}` // Reemplazado aquí
+    abilities.innerHTML = `Abilities: <br> ${pokemon.abilities.map((a) => 
+        `${capitalizarPrimeraLetra(a.ability.name)}${a.is_hidden ? " (Hidden)" : ""}` // Reemplazado aquí
     ).join("<br>")}`;
 
     // Agregar elementos al aside
     asideContainer.appendChild(spriteContainer);
     asideContainer.appendChild(typesContainer);
     asideContainer.appendChild(abilities);
-
-    const evolutionContainer = document.createElement("div");
-    evolutionContainer.id = "evolution-chain";
-    
-    evolutionContainer.style.marginTop = "20px";
-    asideContainer.appendChild(evolutionContainer);
-}
-
-// Función principal para mostrar la línea evolutiva
-function mostrarLineaEvolutiva(cadenaUrl) {
-    // Llamar a la API para obtener la cadena evolutiva
-    fetch(cadenaUrl)
-        .then((response) => response.json())
-        .then((data) => {
-            const contenedorEvolucion = document.getElementById("evolution-chain");
-            contenedorEvolucion.innerHTML = ""; // Limpiar contenido previo
-
-            // Crear título para la línea evolutiva
-            const tituloEvolucion = document.createElement("h3");
-            tituloEvolucion.textContent = "Línea Evolutiva:";
-            contenedorEvolucion.appendChild(tituloEvolucion);
-
-            // Verificamos si la cadena evolutiva existe antes de proceder
-            if (data) {
-                procesarEvoluciones(data.chain, contenedorEvolucion);
-            } else {
-                console.error("La cadena evolutiva no está disponible");
-            }
-        })
-        .catch((error) => {
-            console.error("Error al cargar la cadena evolutiva", error);
-        });
-}
-
-// Función recursiva para recorrer todas las evoluciones
-function procesarEvoluciones(cadena, contenedorEvolucion) {
-    if (!cadena) return; // Verificamos que la cadena exista
-
-    const itemEvolucion = document.createElement("div");
-    itemEvolucion.style.textAlign = "center";
-
-    // Crear el sprite del Pokémon
-    fetch(`https://pokeapi.co/api/v2/pokemon/${cadena.species.name}`)
-        .then((response) => response.json())
-        .then((data) => {
-            const sprite = document.createElement("img");
-            sprite.src = data.sprites.front_default;
-            sprite.alt = cadena.species.name;
-            sprite.style.width = "100px";
-
-            // Crear el texto de la evolución con las condiciones
-            let textoEvolucion = capitalizarPrimeraLetra(cadena.species.name);
-
-            // Verificar si existen condiciones de evolución
-            if (cadena.evolution_details.length > 0) {
-                cadena.evolution_details.forEach(condicion => {
-                    let textoCondicion = "";
-
-                    // Verificar si hay una condición de piedra (item)
-                    if (condicion.item) {
-                        textoCondicion = `=(${capitalizarPrimeraLetra(condicion.item.name)})`; // Mostrar nombre de la piedra
-                    }
-
-                    textoEvolucion = `${textoEvolucion} ${textoCondicion} > ${capitalizarPrimeraLetra(cadena.species.name)}`;
-
-                    // Crear el texto de la etiqueta
-                    const etiqueta = document.createElement("p");
-                    etiqueta.textContent = textoEvolucion;
-
-                    // Agregar sprite e información
-                    itemEvolucion.appendChild(sprite);
-                    itemEvolucion.appendChild(etiqueta);
-                    contenedorEvolucion.appendChild(itemEvolucion);
-                });
-            } else {
-                // Si no hay condiciones, solo mostramos la evolución básica
-                textoEvolucion = `${capitalizarPrimeraLetra(cadena.species.name)} (Sin condiciones)`;
-
-                // Crear el texto de la etiqueta
-                const etiqueta = document.createElement("p");
-                etiqueta.textContent = textoEvolucion;
-
-                // Agregar sprite e información
-                itemEvolucion.appendChild(sprite);
-                itemEvolucion.appendChild(etiqueta);
-                contenedorEvolucion.appendChild(itemEvolucion);
-            }
-        });
-
-    // Si hay más evoluciones de esta etapa, las agregamos
-    if (cadena.evolves_to && cadena.evolves_to.length > 0) {
-        cadena.evolves_to.forEach(evolucion => {
-            procesarEvoluciones(evolucion, contenedorEvolucion); // Recursión para seguir con las evoluciones
-        });
-    }
 }
 
 // Función para capitalizar la primera letra de un string
 function capitalizarPrimeraLetra(cadena) {
     return cadena.charAt(0).toUpperCase() + cadena.slice(1);
+}
+
+// Función para mostrar la tabla de objetos sostenidos
+function mostrarTablaObjetos(pokemon) {
+    const tabla = document.getElementById("tabla-objetos").querySelector("tbody");
+    tabla.innerHTML = ""; // Limpiar tabla existente
+
+    const versionAGeneracion = {
+        "red-blue": 1,
+        "yellow": 1,
+        "gold-silver": 2,
+        "crystal": 2,
+        "ruby-sapphire": 3,
+        "emerald": 3,
+        "firered-leafgreen": 3,
+        "diamond-pearl": 4,
+        "platinum": 4,
+        "heartgold-soulsilver": 4,
+        "black-white": 5,
+        "black-2-white-2": 5,
+        "x-y": 6,
+        "omega-ruby-alpha-sapphire": 6,
+        "sun-moon": 7,
+        "ultra-sun-ultra-moon": 7,
+        "sword-shield": 8,
+    };
+
+    // Iterar sobre los objetos sostenidos
+    pokemon.held_items.forEach((item) => {
+        const fila = document.createElement("tr");
+
+        // Columna del nombre del objeto con sprite
+        const celdaObjeto = document.createElement("td");
+        const sprite = document.createElement("img");
+        sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${item.item.name}.png`;
+        sprite.alt = item.item.name;
+        sprite.style.width = "32px";
+        sprite.style.height = "32px";
+        celdaObjeto.appendChild(sprite);
+        celdaObjeto.appendChild(document.createTextNode(` ${capitalizarPrimeraLetra(item.item.name)}`));
+        fila.appendChild(celdaObjeto);
+
+        // Inicializar un array con columnas vacías para cada generación
+        const celdasGeneraciones = Array(8).fill(null).map(() => document.createElement("td"));
+
+        // Procesar las versiones para encontrar las generaciones y porcentajes
+        item.version_details.forEach((detalle) => {
+            const version = detalle.version.name;
+            const generacion = versionAGeneracion[version];
+
+            if (generacion) {
+                const celda = celdasGeneraciones[generacion - 1];
+                celda.textContent = `${detalle.rarity}%`;
+            }
+        });
+
+        // Agregar las celdas al resto de las columnas de la fila
+        celdasGeneraciones.forEach((celda) => fila.appendChild(celda));
+
+        // Agregar la fila completa a la tabla
+        tabla.appendChild(fila);
+    });
 }
