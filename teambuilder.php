@@ -23,26 +23,31 @@ if ($team) {
     exit;
 }
 
-// Obtener los IDs de los movesets del equipo
-$query = $db->prepare("SELECT moveset FROM equipo_set WHERE equipo = :teamId");
+$query = $db->prepare("
+    SELECT 
+        moveset.pokemon, 
+        moveset.habilidades, 
+        moveset.teratipo, 
+        moveset.moves, 
+        moveset.naturaleza, 
+        moveset.objeto, 
+        moveset.ivs,
+        moveset.evs,
+        equipo_set.capacidad
+    FROM 
+        equipo_set 
+    JOIN 
+        moveset ON equipo_set.moveset = moveset.id
+    WHERE 
+        equipo_set.equipo = :teamId
+    ORDER BY 
+        equipo_set.capacidad ASC
+");
 $query->bindParam(':teamId', $teamId);
 $query->execute();
-$movesetIds = $query->fetchAll(PDO::FETCH_COLUMN);
+$movesets = $query->fetchAll(PDO::FETCH_ASSOC);
 
-$pokemonIds = []; // Array para almacenar los IDs de Pokémon
 
-// Para cada moveset, obtenemos el pokemon asociado
-foreach ($movesetIds as $movesetId) {
-    // Obtener el Pokémon asociado al moveset
-    $query = $db->prepare("SELECT pokemon FROM moveset WHERE id = :movesetId");
-    $query->bindParam(':movesetId', $movesetId);
-    $query->execute();
-    $pokemonId = $query->fetch(PDO::FETCH_ASSOC)['pokemon'];
-
-    if ($pokemonId) {
-        $pokemonIds[] = $pokemonId; // Almacenamos el ID de Pokémon
-    }
-}
 
 ?>
 
@@ -55,6 +60,24 @@ foreach ($movesetIds as $movesetId) {
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="./img/Psydex.png" type="image/png">
     <link rel="stylesheet" href="./css/css.css">
+    <style>
+      .pokemon-card{
+        width: 250px;
+      }
+      /* Ajustar el tamaño de los inputs y espaciado */
+      #details-container input,
+      #details-container select {
+          height: 40px; /* Reducir altura */
+          margin-bottom: 8px; /* Separación entre elementos */
+      }
+
+      /* Alinear elementos */
+      .item-sprite {
+          vertical-align: middle;
+          margin-left: 10px;
+      }
+
+    </style>
 </head>
 <body class="bg-dark text-center d-flex flex-column align-items-center">
     <?php include("./php/cabezera.php"); ?>
@@ -62,15 +85,18 @@ foreach ($movesetIds as $movesetId) {
     <h1 class="text-light mt-4">Teambuilding: <?php echo $teamName; ?></h1>
 
     <!-- Contenedor para los Pokémon del equipo -->
-    <div id="pokemon-container" class="container mt-4 d-flex flex-wrap justify-content-center">
-        <!-- Los Pokémon se cargarán aquí mediante JavaScript -->
+    <div id="pokemon-container" class="container col-12 mt-4 d-flex flex-wrap justify-content-center">
+      <!-- Botón para actualizar la base de datos -->
+
     </div>
 
-    <!-- Input oculto con los Pokémon del equipo -->
-    <input type="hidden" id="pokemon-ids" value="<?php echo htmlspecialchars(json_encode($pokemonIds)); ?>">
+    <!-- Input oculto con los datos del equipo -->
+    <input type="hidden" id="movesets-data" value="<?php echo htmlspecialchars(json_encode($movesets)); ?>">
     
     <!-- Cargar el archivo JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="./js/ev-iv.js"></script>
     <script src="./js/teambuilder.js"></script>
+
 </body>
 </html>
