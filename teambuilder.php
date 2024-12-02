@@ -86,8 +86,6 @@ $movesets = $query->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Contenedor para los Pokémon del equipo -->
     <div id="pokemon-container" class="container col-12 mt-4 d-flex flex-wrap justify-content-center">
-      <!-- Botón para actualizar la base de datos -->
-
     </div>
 
     <!-- Input oculto con los datos del equipo -->
@@ -97,6 +95,7 @@ $movesets = $query->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./js/ev-iv.js"></script>
     <script src="./js/teambuilder.js"></script>
+    <script src="./js/select_teambuilder.js"></script>
 
 </body>
 </html>

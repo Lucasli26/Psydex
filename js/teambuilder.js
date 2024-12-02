@@ -17,31 +17,62 @@ document.addEventListener("DOMContentLoaded", () => {
         const leftCol = document.createElement("div");
         leftCol.classList.add("col-md-4", "mb-3");
 
-        const nameInput = createTextbox("Nombre del Pokémon:", moveset.pokemon);
-        const abilityInput = createTextbox("Habilidad:", moveset.habilidades);
+        // Usamos el nuevo parámetro `isNameInput` para asignar el ID y las clases al input de nombre
+        const nameInput = createTextbox("Nombre del Pokémon:", moveset.pokemon, true);
 
-        // Objeto con sprite
+        // Crear el contenedor de sugerencias
+        const suggestionsContainer = document.createElement("ul");
+        suggestionsContainer.id = "suggestions-container"; // id para el contenedor de sugerencias
+        suggestionsContainer.classList.add("list-group", "text-danger"); // clases para el contenedor de sugerencias
+
+        // Crear el input de habilidad
+        const abilityInput = createTextbox("Habilidad:", moveset.habilidades, false, false, true);
+
+        // Crear el contenedor de sugerencias
+        const abilityContainer = document.createElement("ul");
+        abilityContainer.id = "ability-container"; // id para el contenedor de sugerencias
+        abilityContainer.classList.add("list-group", "text-danger"); // clases para el contenedor de sugerencias
+
         const itemContainer = document.createElement("div");
-        itemContainer.classList.add("form-group", "d-flex", "align-items-center");
-        const itemLabel = document.createElement("label");
-        itemLabel.textContent = "Objeto:";
-        itemLabel.classList.add("mr-2");
-        const itemInput = document.createElement("input");
-        itemInput.type = "text";
-        itemInput.value = moveset.objeto;
-        itemInput.classList.add("form-control", "mr-2");
-        const itemSprite = document.createElement("img");
-        itemSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${moveset.objeto.toLowerCase()}.png`;
-        itemSprite.alt = moveset.objeto;
-        itemSprite.classList.add("item-sprite");
-        itemSprite.width = 40;
-        itemSprite.height = 40;
-        itemContainer.appendChild(itemLabel);
-        itemContainer.appendChild(itemInput);
-        itemContainer.appendChild(itemSprite);
+        itemContainer.classList.add("form-group", "d-flex", "flex-column", "align-items-center", "justify-content-center");
+                
+                const itemLabel = document.createElement("label");
+                itemLabel.textContent = "Objeto:";
+                itemLabel.classList.add("mr-2");
+                
+                // Crear el input de texto para el objeto
+                const itemInput = document.createElement("input");
+                itemInput.type = "text";
+                itemInput.value = moveset.objeto; // El valor por defecto será el objeto del moveset
+                itemInput.classList.add("form-control", "mr-2");
+                itemInput.id = "pokemon-object-input";
+                itemInput.placeholder = "Buscar o escribir objeto..."; // Placeholder para sugerencias
+                const itemSprite = document.createElement("img");
+                itemSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${moveset.objeto.toLowerCase()}.png`;
+                itemSprite.alt = moveset.objeto;
+                itemSprite.classList.add("item-sprite");
+                itemSprite.width = 40;
+                itemSprite.height = 40;
+                
+                // Contenedor para las sugerencias
+                const itemSuggestionsContainer = document.createElement("ul");
+                itemSuggestionsContainer.id = "item-suggestions-container"; // ID para el contenedor de sugerencias
+                itemSuggestionsContainer.classList.add("list-group", "text-dark", "position-absolute", "w-100", "bg-white");
+                
+                // Conexión de los elementos del contenedor
+                itemContainer.appendChild(itemLabel);
+                itemContainer.appendChild(itemSprite);
+                itemContainer.appendChild(itemInput);
+                itemContainer.appendChild(itemSuggestionsContainer);
+                
+                
+                
 
         leftCol.appendChild(nameInput);
+        leftCol.appendChild(suggestionsContainer);
         leftCol.appendChild(abilityInput);
+        leftCol.appendChild(abilityContainer);
+        // Insertar el contenedor en la columna izquierda
         leftCol.appendChild(itemContainer);
         const ivSection = createIVTextboxes(moveset.ivs || "0 HP / 0 Atk / 0 Def / 0 SpA / 0 SpD / 0 Spe");
         leftCol.appendChild(ivSection);
@@ -52,9 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
         centerCol.classList.add("col-md-4", "mb-3");
         const moves = moveset.moves.split(" - ").map(move => move.trim());
         moves.forEach((move, index) => {
-            const moveInput = createTextbox(`Movimiento ${index + 1}:`, move);
+            const moveInput = createTextbox(`Movimiento ${index + 1}:`, move, false, true);
             centerCol.appendChild(moveInput);
         });
+
+        // Crear el contenedor de sugerencias
+        const movesContainer = document.createElement("ul");
+        movesContainer.id = "moves-container"; // id para el contenedor de sugerencias
+        movesContainer.classList.add("list-group", "text-danger", "border", "border-5"); // clases para el contenedor de sugerencias
+        centerCol.appendChild(movesContainer);
 
         // Columna Derecha: Teratipo, Naturaleza y EVs
         const rightCol = document.createElement("div");
@@ -86,116 +123,128 @@ document.addEventListener("DOMContentLoaded", () => {
         row.appendChild(rightCol);
 
         // Crear y agregar el botón con el icono
-const buttonContainer = document.createElement("div");
-buttonContainer.classList.add("col-md-12");
+        const buttonContainer = document.createElement("div");
+        buttonContainer.classList.add("col-md-12");
 
-const button = document.createElement("button");
-button.classList.add("btn", "btn-primary", "mb-2");
+        const button = document.createElement("button");
+        button.classList.add("btn", "btn-primary", "mb-2");
 
-// Crear el SVG para el icono
-const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-icon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-icon.setAttribute("width", "25");
-icon.setAttribute("height", "25");
-icon.setAttribute("fill", "currentColor");
-icon.setAttribute("class", "bi bi-patch-check-fill");
-icon.setAttribute("viewBox", "0 0 16 16");
+        // Crear el SVG para el icono
+        const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        icon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        icon.setAttribute("width", "25");
+        icon.setAttribute("height", "25");
+        icon.setAttribute("fill", "currentColor");
+        icon.setAttribute("class", "bi bi-patch-check-fill");
+        icon.setAttribute("viewBox", "0 0 16 16");
 
-// Crear el path del icono
-const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-path.setAttribute("d", "M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708");
+        // Crear el path del icono
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", "M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zm.287 5.984-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708");
 
-// Añadir el path al SVG
-icon.appendChild(path);
+        // Añadir el path al SVG
+        icon.appendChild(path);
 
-// Agregar el SVG al botón
-button.appendChild(icon);
+        // Agregar el SVG al botón
+        button.appendChild(icon);
 
-// Agregar la acción del botón
-button.onclick = () => {
-    try {
-        // Recolectar datos del formulario
-        const pokemonName = detailsContainer.querySelector('.form-group input[type="text"]').value; // Campo de nombre del Pokémon
-        const ability = detailsContainer.querySelectorAll('.form-group input[type="text"]')[1].value; // Campo de habilidad
-        const item = detailsContainer.querySelectorAll('.form-group input[type="text"]')[2].value; // Campo de objeto
+        // Agregar la acción del botón
+        button.onclick = () => {
+            try {
+                // Recolectar datos del formulario
+                const pokemonName = detailsContainer.querySelector('.form-group input[type="text"]').value; // Campo de nombre del Pokémon
+                const ability = detailsContainer.querySelectorAll('.form-group input[type="text"]')[1].value; // Campo de habilidad
+                const item = detailsContainer.querySelectorAll('.form-group input[type="text"]')[2].value; // Campo de objeto
 
-        const teratype = detailsContainer.querySelector('select.form-control').value; // Teratipo
-        const nature = detailsContainer.querySelectorAll('select.form-control')[1].value; // Naturaleza
+                const teratype = detailsContainer.querySelector('select.form-control').value; // Teratipo
+                const nature = detailsContainer.querySelectorAll('select.form-control')[1].value; // Naturaleza
 
-        // Recolectar movimientos
-        const moves = [];
-        const moveInputs = Array.from(detailsContainer.querySelectorAll('.col-md-4 input[type="text"]')).slice(3, 7); // Campos de movimientos
-        moveInputs.forEach(input => moves.push(input.value));
+                // Recolectar movimientos
+                const moves = [];
+                const moveInputs = Array.from(detailsContainer.querySelectorAll('.col-md-4 input[type="text"]')).slice(3, 7); // Campos de movimientos
+                moveInputs.forEach(input => moves.push(input.value));
 
-        
+                // Recolectar IVs y EVs
 
-// Recolectar IVs y EVs
+                // Seleccionamos todos los inputs de EVs y IVs generados en las secciones correspondientes
+                const evInputs = detailsContainer.querySelectorAll('.mt-3 .ev-section input[type="number"]');
+                const ivInputs = detailsContainer.querySelectorAll('.mt-3 .iv-section input[type="number"]');
 
-// Seleccionamos todos los inputs de EVs y IVs generados en las secciones correspondientes
-const evInputs = detailsContainer.querySelectorAll('.mt-3 .ev-section input[type="number"]');
-const ivInputs = detailsContainer.querySelectorAll('.mt-3 .iv-section input[type="number"]');
+                // Crear las cadenas de EVs e IVs
+                const evs = Array.from(evInputs)
+                    .map(input => `${input.value} ${input.previousElementSibling.textContent}`)
+                    .join(" / ") || "No definido";
 
-// Crear las cadenas de EVs e IVs
-const evs = Array.from(evInputs)
-    .map(input => `${input.value} ${input.previousElementSibling.textContent}`)
-    .join(" / ") || "No definido";
+                const ivs = Array.from(ivInputs)
+                    .map(input => `${input.value} ${input.previousElementSibling.textContent}`)
+                    .join(" / ") || "No definido";
 
-const ivs = Array.from(ivInputs)
-    .map(input => `${input.value} ${input.previousElementSibling.textContent}`)
-    .join(" / ") || "No definido";
-
-        // Mostrar los datos recolectados
-        alert(
-            `Pokemon: ${pokemonName}\n` +
-            `Habilidad: ${ability}\n` +
-            `Objeto: ${item}\n` +
-            `Teratipo: ${teratype}\n` +
-            `Naturaleza: ${nature}\n` +
-            `Movimientos: ${moves.join(", ")}\n` +
-            `IVs: ${ivs}\n` +
-            `EVs: ${evs}`
-        );
-    } catch (error) {
-        console.error("Error al recolectar datos:", error);
-        alert("Hubo un error al recolectar los datos. Verifica la consola para más detalles.");
-    }
-};
-
-
-// Añadir el botón al contenedor
-buttonContainer.appendChild(button);
-
-// Agregar el contenedor del botón al contenedor de detalles
-detailsContainer.appendChild(buttonContainer);
-
-// Agregar la fila con los detalles al contenedor de detalles
-detailsContainer.appendChild(row);
-
+                        // Mostrar los datos recolectados
+                        alert(
+                            `Pokemon: ${pokemonName}\n` +
+                            `Habilidad: ${ability}\n` +
+                            `Objeto: ${item}\n` +
+                            `Teratipo: ${teratype}\n` +
+                            `Naturaleza: ${nature}\n` +
+                            `Movimientos: ${moves.join(", ")}\n` +
+                            `IVs: ${ivs}\n` +
+                            `EVs: ${evs}`
+                        );
+                    } catch (error) {
+                        console.error("Error al recolectar datos:", error);
+                        alert("Hubo un error al recolectar los datos. Verifica la consola para más detalles.");
+            }
+        };
+        // Añadir el botón al contenedor
+        buttonContainer.appendChild(button);
+        // Agregar el contenedor del botón al contenedor de detalles
+        detailsContainer.appendChild(buttonContainer);
+        // Agregar la fila con los detalles al contenedor de detalles
+        detailsContainer.appendChild(row);
 
     }
 
-    /**
-     * Crear un textbox con etiqueta
-     * @param {string} labelText - El texto para la etiqueta.
-     * @param {string} value - El valor por defecto para el campo.
-     * @returns {HTMLElement} - El textbox creado.
-     */
-    function createTextbox(labelText, value) {
-        const div = document.createElement("div");
-        div.classList.add("form-group");
+/**
+ * Crear un textbox con etiqueta
+ * @param {string} labelText - El texto para la etiqueta.
+ * @param {string} value - El valor por defecto para el campo.
+ * @param {boolean} [isNameInput=false] - Si es verdadero, aplica características especiales para el input de nombre.
+ * @param {boolean} [isMoveInput=false] - Si es verdadero, aplica características especiales para los inputs de movimiento.
+ * @param {boolean} [isAbilityInput=false] - Si es verdadero, aplica características especiales para el input de habilidades.
+ * @returns {HTMLElement} - El textbox creado.
+ */
+function createTextbox(labelText, value, isNameInput = false, isMoveInput = false, isAbilityInput = false) {
+    const div = document.createElement("div");
+    div.classList.add("form-group");
 
-        const label = document.createElement("label");
-        label.textContent = labelText;
-        div.appendChild(label);
+    const label = document.createElement("label");
+    label.textContent = labelText;
+    div.appendChild(label);
 
-        const input = document.createElement("input");
-        input.type = "text";
-        input.value = value;
-        input.classList.add("form-control");
-        div.appendChild(input);
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = value;
+    input.classList.add("form-control");
 
-        return div;
+    if (isNameInput) {
+        input.id = "pokemon-name-input";
+        input.classList.add("search-input");
+        input.placeholder = "Buscar Pokémon...";
+    } else if (isMoveInput) {
+        input.classList.add("move-input");
+        input.setAttribute("data-move-index", labelText.match(/\d+/)?.[0]); // Asociar índice basado en etiqueta
+    } else if (isAbilityInput) {
+        input.id = "pokemon-ability-input";
+        input.classList.add("ability-input");
+        input.placeholder = "Seleccionar habilidad...";
     }
+
+    div.appendChild(input);
+    return div;
+}
+
+
+
 
     /**
      * Crear un dropdown con etiqueta
