@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="icon" href="./img/Psydex.png" type="image/png">
     <link rel="stylesheet" href="./css/css.css">
-    <script src="pokeDatos.js" defer></script>
+    <script src="./js/pokeDatosAside.js" defer></script>
+    <script src="./js/pokeDatosSection.js" defer></script>
     <title>Pokemon Datos</title>
     <style>
         /* Personalizaciones adicionales si es necesario */
@@ -45,6 +46,14 @@
             text-align: center; /* Opcional: centra el contenido */
         }
 
+        section{
+            border-radius: 5px;
+        }
+
+        #pokemon-movimientos{
+            font-size: 0.9em;
+        }
+
     </style>
 </head>
 
@@ -52,27 +61,34 @@
 
     <?php include("./php/cabezera.php"); ?>
 
-    <main class="container-fluid d-flex justify-content-center p-0">
-        <!-- Section para el contenido principal -->
-        <section class="col-md-8 col-12 p-3">
-            <div id="pokemon-info">
-                <!-- Aquí agregamos la línea evolutiva -->
-                <div id="evolution-chain" class="evolution-chain">
-                    <!-- Aquí se insertarán las imágenes de la evolución desde JavaScript -->
-                </div>
-            </div>
-        </section>
-        <!-- Aside para mostrar los datos del Pokémon -->
-        <aside class="col-md-4 col-12 bg-danger mt-5 mr-5 p-3 d-flex flex-column text-dark">
-            <div id="pokemon-aside" class="col-6 text-center">
-                <!-- Aquí se insertarán los datos desde JavaScript -->
-            </div>
-            <div id="pokemon-form" class="col-6 text-center">
-                <!-- Aquí se insertarán las formas desde JavaScript -->
-            </div>
+    <main class="container-fluid d-flex justify-content-center align-items-start p-0">
+    <!-- Section para el contenido principal -->
+    <section id="pokemon-main-container" class="col-md-7 col-12 p-3 bg-white mt-5 mr-5 p-3 d-flex flex-column text-dark">
+        <div id="pokemon-stats" class="">
+            <h4>Base Stats:</h4>
+            <!-- Aquí mostramos las estadísticas bases del pokémon -->
+        </div>
+        <div id="pokemon-evolucion">
+            <h4>Evolution:</h4>
+            <!-- Aquí mostramos la línea evolutiva del pokémon -->
+        </div>
+        <div id="pokemon-movimientos" class="accordion mt-5">
+            <!-- Aquí mostramos los movimientos del pokémon -->
+        </div>
+    </section>
 
-        </aside>
-    </main>
+    <!-- Aside para mostrar los datos del Pokémon -->
+    <aside class="col-md-4 col-12 bg-white mt-5 mr-3 p-3 d-flex flex-row text-dark">
+        <div id="pokemon-aside" class="col-6 text-center">
+            <!-- Aquí se insertarán los datos desde JavaScript -->
+        </div>
+        <div id="pokemon-forms" class="col-6 text-center"></div>
+    </aside>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 
