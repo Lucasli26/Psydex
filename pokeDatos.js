@@ -13,13 +13,7 @@ if (pokemonName) {
         })
         .then((pokemonData) => {
             mostrarDetallesAside(pokemonData); // Mostrar en el aside
-            const speciesUrl = pokemonData.species.url; // Obtener la URL de la especie
-            // Llamar a la función correcta para obtener la cadena evolutiva
-            fetch(speciesUrl)
-                .then((response) => response.json())
-                .then((speciesData) => {
-                    mostrarLineaEvolutiva(speciesData.evolution_chain.url);
-                });
+            mostrarFormasAlternas(pokemonData); // Mostrar formas alternas
         })
         .catch((error) => {
             console.error(error);
@@ -66,112 +60,163 @@ function mostrarDetallesAside(pokemon) {
 
     // Habilidades
     const abilities = document.createElement("p");
-    abilities.innerHTML = `Habilidades: <br> ${pokemon.abilities.map((a) => 
-        `${capitalizarPrimeraLetra(a.ability.name)}${a.is_hidden ? " (Oculta)" : ""}` // Reemplazado aquí
+    abilities.innerHTML = `Abilities: <br> ${pokemon.abilities.map((a) => 
+        `${capitalizarPrimeraLetra(a.ability.name)}${a.is_hidden ? " (Hidden)" : ""}` // Reemplazado aquí
     ).join("<br>")}`;
 
-    // Agregar elementos al aside
+    // Agregar sprite, tipos y habilidades
     asideContainer.appendChild(spriteContainer);
     asideContainer.appendChild(typesContainer);
     asideContainer.appendChild(abilities);
 
-    const evolutionContainer = document.createElement("div");
-    evolutionContainer.id = "evolution-chain";
-    
-    evolutionContainer.style.marginTop = "20px";
-    asideContainer.appendChild(evolutionContainer);
+    // Mostrar objetos por generación
+    mostrarObjetosPorGeneracion(pokemon, asideContainer);
 }
 
-// Función principal para mostrar la línea evolutiva
-function mostrarLineaEvolutiva(cadenaUrl) {
-    // Llamar a la API para obtener la cadena evolutiva
-    fetch(cadenaUrl)
-        .then((response) => response.json())
-        .then((data) => {
-            const contenedorEvolucion = document.getElementById("evolution-chain");
-            contenedorEvolucion.innerHTML = ""; // Limpiar contenido previo
+// Función para mostrar objetos por generación
+function mostrarObjetosPorGeneracion(pokemon, asideContainer) {
+    const generaciones = {
+        "red": 1,
+        "blue": 1,
+        "yellow": 1,
+        "firered": 1,
+        "leafgreen": 1,
+        "gold": 2,
+        "silver": 2,
+        "heartgold": 2,
+        "soulsilver": 2,
+        "ruby": 3,
+        "sapphire": 3,
+        "emerald": 3,
+        "omega-ruby": 3,
+        "alpha-sapphire": 3,
+        "diamond": 4,
+        "pearl": 4,
+        "platinum": 4,
+        "black": 5,
+        "white": 5,
+        "black-2": 5,
+        "white-2": 5,
+        "x": 6,
+        "y": 6,
+        "sun": 7,
+        "moon": 7,
+        "ultra-sun": 7,
+        "ultra-moon": 7,
+        "sword": 8,
+        "shield": 8,
+        "scarlet": 7,
+        "violet": 7,
+    };
 
-            // Crear título para la línea evolutiva
-            const tituloEvolucion = document.createElement("h3");
-            tituloEvolucion.textContent = "Línea Evolutiva:";
-            contenedorEvolucion.appendChild(tituloEvolucion);
+    const objetosContainer = document.createElement("div");
+    objetosContainer.classList.add("mt-4");
 
-            // Verificamos si la cadena evolutiva existe antes de proceder
-            if (data) {
-                procesarEvoluciones(data.chain, contenedorEvolucion);
-            } else {
-                console.error("La cadena evolutiva no está disponible");
-            }
-        })
-        .catch((error) => {
-            console.error("Error al cargar la cadena evolutiva", error);
-        });
-}
+    const objetosPorGeneracion = {};
 
-// Función recursiva para recorrer todas las evoluciones
-function procesarEvoluciones(cadena, contenedorEvolucion) {
-    if (!cadena) return; // Verificamos que la cadena exista
+    pokemon.held_items.forEach((item) => {
+        item.version_details.forEach((versionDetail) => {
+            const generacion = generaciones[versionDetail.version.name];
+            if (generacion) {
+                if (!objetosPorGeneracion[generacion]) {
+                    objetosPorGeneracion[generacion] = {};
+                }
 
-    const itemEvolucion = document.createElement("div");
-    itemEvolucion.style.textAlign = "center";
-
-    // Crear el sprite del Pokémon
-    fetch(`https://pokeapi.co/api/v2/pokemon/${cadena.species.name}`)
-        .then((response) => response.json())
-        .then((data) => {
-            const sprite = document.createElement("img");
-            sprite.src = data.sprites.front_default;
-            sprite.alt = cadena.species.name;
-            sprite.style.width = "100px";
-
-            // Crear el texto de la evolución con las condiciones
-            let textoEvolucion = capitalizarPrimeraLetra(cadena.species.name);
-
-            // Verificar si existen condiciones de evolución
-            if (cadena.evolution_details.length > 0) {
-                cadena.evolution_details.forEach(condicion => {
-                    let textoCondicion = "";
-
-                    // Verificar si hay una condición de piedra (item)
-                    if (condicion.item) {
-                        textoCondicion = `=(${capitalizarPrimeraLetra(condicion.item.name)})`; // Mostrar nombre de la piedra
+                if (objetosPorGeneracion[generacion][item.item.name]) {
+                    if (objetosPorGeneracion[generacion][item.item.name].porcentaje < versionDetail.rarity) {
+                        objetosPorGeneracion[generacion][item.item.name].porcentaje = versionDetail.rarity;
                     }
+                } else {
+                    objetosPorGeneracion[generacion][item.item.name] = {
+                        nombre: item.item.name,
+                        porcentaje: versionDetail.rarity,
+                    };
+                }
+            }
+        });
+    });
 
-                    textoEvolucion = `${textoEvolucion} ${textoCondicion} > ${capitalizarPrimeraLetra(cadena.species.name)}`;
+    for (const [generacion, objetos] of Object.entries(objetosPorGeneracion)) {
+        const generacionTitulo = document.createElement("p");
+        generacionTitulo.textContent = `Generación ${generacion}`;
+        generacionTitulo.style.fontWeight = "bold";
+        generacionTitulo.style.fontSize = "20px";
+        generacionTitulo.classList.add("mt-3");
 
-                    // Crear el texto de la etiqueta
-                    const etiqueta = document.createElement("p");
-                    etiqueta.textContent = textoEvolucion;
+        const listaObjetos = document.createElement("ul");
+        listaObjetos.classList.add("list-unstyled");
 
-                    // Agregar sprite e información
-                    itemEvolucion.appendChild(sprite);
-                    itemEvolucion.appendChild(etiqueta);
-                    contenedorEvolucion.appendChild(itemEvolucion);
+        for (const objetoKey in objetos) {
+            const objeto = objetos[objetoKey];
+            const itemLista = document.createElement("li");
+            itemLista.style.fontSize = "14px";
+
+            const sprite = document.createElement("img");
+            sprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${objeto.nombre}.png`;
+            sprite.alt = objeto.nombre;
+            sprite.style.width = "32px";
+            sprite.style.height = "32px";
+
+            const texto = document.createTextNode(` ${capitalizarPrimeraLetra(objeto.nombre)}: ${Math.min(100, objeto.porcentaje)}%`);
+
+            itemLista.appendChild(sprite);
+            itemLista.appendChild(texto);
+
+            listaObjetos.appendChild(itemLista);
+        }
+
+        objetosContainer.appendChild(generacionTitulo);
+        objetosContainer.appendChild(listaObjetos);
+    }
+
+    asideContainer.appendChild(objetosContainer);
+}
+
+// Función para mostrar las formas alternas del Pokémon
+function mostrarFormasAlternas(pokemon) {
+    const pokeFormas = `https://pokeapi.co/api/v2/pokemon-species/${pokemon.name}/varieties`;
+
+    fetch(pokeFormas)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al obtener los datos de las variedades');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Filtrar las variedades para eliminar la que coincide con el nombre del Pokémon actual
+            const formasAlternas = data.results.filter(forma => forma.name !== pokemon.name); // Eliminar la forma principal
+
+            if (formasAlternas.length > 0) {
+                const formasContainer = document.getElementById("pokemon-form");
+                formasContainer.innerHTML = "";
+
+                const tituloFormas = document.createElement("h4");
+                tituloFormas.textContent = "Formas Alternas:";
+                formasContainer.appendChild(tituloFormas);
+
+                formasAlternas.forEach(forma => {
+                    const formaNombre = document.createElement("p");
+
+                    const enlace = document.createElement("a");
+                    enlace.href = `?name=${forma.name}`;
+                    enlace.textContent = capitalizarPrimeraLetra(forma.name);
+                    enlace.style.cursor = "pointer";
+                    formaNombre.appendChild(enlace);
+
+                    formasContainer.appendChild(formaNombre);
                 });
             } else {
-                // Si no hay condiciones, solo mostramos la evolución básica
-                textoEvolucion = `${capitalizarPrimeraLetra(cadena.species.name)} (Sin condiciones)`;
-
-                // Crear el texto de la etiqueta
-                const etiqueta = document.createElement("p");
-                etiqueta.textContent = textoEvolucion;
-
-                // Agregar sprite e información
-                itemEvolucion.appendChild(sprite);
-                itemEvolucion.appendChild(etiqueta);
-                contenedorEvolucion.appendChild(itemEvolucion);
+                const noFormas = document.createElement("p");
+                noFormas.textContent = "Este Pokémon no tiene formas alternas.";
+                document.getElementById("pokemon-form").appendChild(noFormas);
             }
+        })
+        .catch(error => {
+            console.error('Error al cargar las formas alternas:', error);
         });
-
-    // Si hay más evoluciones de esta etapa, las agregamos
-    if (cadena.evolves_to && cadena.evolves_to.length > 0) {
-        cadena.evolves_to.forEach(evolucion => {
-            procesarEvoluciones(evolucion, contenedorEvolucion); // Recursión para seguir con las evoluciones
-        });
-    }
 }
 
-// Función para capitalizar la primera letra de un string
 function capitalizarPrimeraLetra(cadena) {
     return cadena.charAt(0).toUpperCase() + cadena.slice(1);
 }

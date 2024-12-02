@@ -1,9 +1,3 @@
-<?php
-
-?>
-<?php
-// Aquí va tu código PHP si es necesario
-?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,7 +21,7 @@
             padding: 0;
         }
 
-        aside{
+        aside {
             border-radius: 5px;
         }
 
@@ -43,22 +37,14 @@
             width: 70px;
             height: 30px;
         }
-
-        .evolution-chain img {
-            width: 100px;
-            margin: 5px;
+        
+        #pokemon-form {
+            max-height: 500px;  /* Ajusta la altura según sea necesario */
+            overflow-y: auto;   /* Esto permite que el contenido se desplace si es muy grande */
+            padding: 10px;
+            text-align: center; /* Opcional: centra el contenido */
         }
 
-        .evolution-chain {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .evolution-chain p {
-            text-align: center;
-            margin-top: 10px;
-        }
     </style>
 </head>
 
@@ -66,28 +52,27 @@
 
     <?php include("./php/cabezera.php"); ?>
 
-    <div class="d-flex">
-        <main class="container-fluid d-flex justify-content-center p-0">
-            <!-- Section para el contenido principal -->
-            <section class="col-md-8 col-12 p-3">
-                <div id="pokemon-info">
-                    <!-- <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Quae atque ullam iste excepturi itaque accusantium dolore, possimus ipsum quaerat expedita nam perspiciatis ab cumque non repudiandae animi? Molestiae, est ullam.</p> -->
-
-                    <!-- Aquí agregamos la línea evolutiva -->
-                    <div id="evolution-chain" class="evolution-chain">
-                        <!-- Aquí se insertarán las imágenes de la evolución desde JavaScript -->
-                    </div>
+    <main class="container-fluid d-flex justify-content-center p-0">
+        <!-- Section para el contenido principal -->
+        <section class="col-md-8 col-12 p-3">
+            <div id="pokemon-info">
+                <!-- Aquí agregamos la línea evolutiva -->
+                <div id="evolution-chain" class="evolution-chain">
+                    <!-- Aquí se insertarán las imágenes de la evolución desde JavaScript -->
                 </div>
-            </section>
-        </main>
-
-        <!-- Aside para mostrar el ícono del Pokémon, tipos y habilidades -->
-        <aside class="col-md-4 col-12 bg-danger mt-5 p-3 d-flex flex-column align-items-center text-dark">
-            <div id="pokemon-aside" class="text-center">
+            </div>
+        </section>
+        <!-- Aside para mostrar los datos del Pokémon -->
+        <aside class="col-md-4 col-12 bg-danger mt-5 mr-5 p-3 d-flex flex-column text-dark">
+            <div id="pokemon-aside" class="col-6 text-center">
                 <!-- Aquí se insertarán los datos desde JavaScript -->
             </div>
+            <div id="pokemon-form" class="col-6 text-center">
+                <!-- Aquí se insertarán las formas desde JavaScript -->
+            </div>
+
         </aside>
-    </div>
+    </main>
 
 </body>
 
