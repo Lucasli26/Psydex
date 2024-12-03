@@ -12,6 +12,10 @@ try {
         $usu->execute();
 
         $User = $usu->fetch();
+    }else{
+        // Si no hay un usuario autenticado, redirigir al login
+        header("Location: ./login.php");
+        exit;
     }
 
 } catch (PDOException $e) {

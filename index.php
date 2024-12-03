@@ -4,14 +4,11 @@ include("./php/conexion.php");
 
 try {
   $db = new PDO($cadena_conexion, $usuario, $clave);
-
   if (isset($_SESSION["id"])) {
     $sqlLog = "SELECT * FROM usuarios where id = ?";
     $usu = $db->prepare($sqlLog);
     $usu->execute([$_SESSION["id"]]);
     $usuario = $usu->fetch();
-  } else {
-    echo "No se a iniciado sesion";
   }
 } catch (PDOException $e) {
   echo "Error con la base de datos: " . $e->getMessage();

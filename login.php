@@ -6,7 +6,7 @@ if (isset($_SESSION["id"])) {
     exit;  // Asegúrate de usar exit para evitar que el script siga ejecutándose
 }
 include("./php/conexion.php");
-include("./php/comprobar_login.php");
+// include("./php/comprobar_login.php");
 
     // Hacemos un método POST para que recibamos los valores del formulario y los transformemos a valores
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -98,7 +98,9 @@ include("./php/comprobar_login.php");
                     <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
                         <button type="submit" class="btn btn-dark border-white me-0 me-md-2 mb-2 mb-md-0">Iniciar sesión</button>
                         <a href="./newUsuario.php" class="btn btn-dark border-white">Registrarse</a>
+                        <a href="./index.php" class="btn btn-dark border-white">Invitado</a>
                     </div>
+                    
                 </form>
             </div>
         </div>
