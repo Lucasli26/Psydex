@@ -28,6 +28,70 @@ function mostrarDetallesAside(pokemon) {
     const asideContainer = document.getElementById("pokemon-aside");
     asideContainer.innerHTML = ""; // Limpiar contenido previo
 
+     // Obtener el estado de favorito desde la base de datos (usando la sesión)
+     const isFavorite = (sessionStorage.getItem('pokefoto') === pokemon.name);
+
+
+    // Crear un contenedor para la estrella que ocupe todo el ancho
+    const estrellaContainer = document.createElement("div");
+    estrellaContainer.style.position = "absolute";
+    estrellaContainer.style.top = "5px";
+    estrellaContainer.style.left = "10px";
+    estrellaContainer.style.zIndex = "1";
+
+    // Crear el ícono de la estrella
+    const estrellaIcono = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    estrellaIcono.setAttribute("width", "30");
+    estrellaIcono.setAttribute("height", "30");
+    estrellaIcono.setAttribute("fill", "currentColor");
+    estrellaIcono.setAttribute("class", "bi bi-star-fill");
+    estrellaIcono.setAttribute("viewBox", "0 0 16 16");
+
+
+    const estrellaPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    estrellaPath.setAttribute("d", "M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z");
+    estrellaIcono.appendChild(estrellaPath);
+
+        // Hacer que la estrella sea clickeable para cambiar el estado de favorito
+        estrellaIcono.addEventListener('click', function () {
+            // Cambiar el estado de favorito al hacer clic
+            const nuevoEstadoFavorito = !isFavorite;  // Si es favorito, lo desmarcamos y viceversa
+    
+            // Actualizar la estrella visualmente
+            estrellaIcono.setAttribute("class", nuevoEstadoFavorito ? "bi bi-star-fill text-warning" : "bi bi-star");
+    
+            // Llamamos a una función que envíe los cambios al backend, usando Fetch para actualizar `pokefoto` del usuario.
+            fetch('../php/actualizar_favorito.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nombre: pokemon.name, isFavorite: nuevoEstadoFavorito })
+            })
+            .then(response => response.text())  // Cambiar a text() para ver la respuesta completa
+            .then(data => {
+                console.log("Respuesta del servidor (texto crudo):", data);  // Registrar la respuesta completa
+                try {
+                    const jsonData = JSON.parse(data);  // Intentar parsear como JSON
+                    if (jsonData.success) {
+                        sessionStorage.setItem('pokefoto', nuevoEstadoFavorito ? pokemon.name : '');
+                    } else {
+                        console.error("Error al actualizar el favorito:", jsonData.error);
+                    }
+                } catch (error) {
+                    console.error("Error al parsear la respuesta como JSON:", error);
+                }
+            })
+            .catch(error => {
+                console.error("Error al hacer la petición:", error);
+            });
+            
+        });
+
+    // Agregar la estrella al contenedor de la estrella
+    estrellaContainer.appendChild(estrellaIcono); // Estrella en la esquina
+
+    // Crear el contenedor para el sprite y el nombre del Pokémon
     const spriteContainer = document.createElement("div");
     spriteContainer.style.position = "relative";
     spriteContainer.style.display = "inline-block";
@@ -35,9 +99,9 @@ function mostrarDetallesAside(pokemon) {
     // Nombre del Pokémon
     const nombre = document.createElement("p");
     nombre.textContent = capitalizarPrimeraLetra(pokemon.name); // Capitalizar el nombre
-    nombre.style.textAlign = "center"; // Alinear el texto al centro
-    nombre.style.fontWeight = "bold"; // Hacer el texto más destacado
-    nombre.style.marginTop = "10px"; // Agregar espacio entre el sprite y el nombre
+    nombre.style.textAlign = "center"; 
+    nombre.style.fontWeight = "bold"; 
+    nombre.style.marginTop = "10px"; 
 
     // Ícono (sprite)
     const sprite = document.createElement("img");
@@ -45,9 +109,9 @@ function mostrarDetallesAside(pokemon) {
     sprite.alt = pokemon.name;
     sprite.style.width = "150px"; // Ajustar tamaño si es necesario
 
-    // Agregar sprite al contenedor
-    spriteContainer.appendChild(nombre);
-    spriteContainer.appendChild(sprite);
+    // Agregar sprite y nombre al contenedor
+    spriteContainer.appendChild(nombre); // Nombre del Pokémon
+    spriteContainer.appendChild(sprite); // Imagen del Pokémon
 
     // Contenedor de los tipos con imágenes
     const typesContainer = document.createElement("div");
@@ -61,8 +125,8 @@ function mostrarDetallesAside(pokemon) {
         typeImage.src = `./img/${t.type.name}.png`; // Ruta de tu carpeta de tipos
         typeImage.alt = t.type.name;
         typeImage.title = capitalizarPrimeraLetra(t.type.name); // Tooltip con el nombre del tipo
-        typeImage.style.width = "auto"; // Tamaño ajustado para las imágenes
-        typeImage.style.height = "auto"; // Tamaño ajustado para las imágenes
+        typeImage.style.width = "auto";
+        typeImage.style.height = "auto";
         typesContainer.appendChild(typeImage);
     });
 
@@ -73,16 +137,35 @@ function mostrarDetallesAside(pokemon) {
             `${capitalizarPrimeraLetra(a.ability.name)}${a.is_hidden ? " (Hidden)" : ""}`
         )
         .join("<br>")}`;
-        habilidades.style.fontSize = "13px";
-        habilidades.style.fontWeight = "bold";
+    habilidades.style.fontSize = "13px";
+    habilidades.style.fontWeight = "bold";
 
-    // Agregar sprite, tipos y habilidades
-    asideContainer.appendChild(spriteContainer);
-    asideContainer.appendChild(typesContainer);
-    asideContainer.appendChild(habilidades);
+    // Agregar la estrella, sprite, tipos y habilidades al aside
+    asideContainer.appendChild(estrellaContainer); // Estrella en su contenedor
+    asideContainer.appendChild(spriteContainer);   // Contenedor del sprite y el nombre
+    asideContainer.appendChild(typesContainer);   // Contenedor de los tipos
+    asideContainer.appendChild(habilidades);      // Habilidades
 
     // Mostrar objetos por generación
     mostrarObjetosPorGeneracion(pokemon, asideContainer);
+}
+
+// Función para manejar el cambio de favorito
+function alternarFavorito(pokemon) {
+    fetch(`../php/actualizar_favorito.php?name=${pokemon.name}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Alternar la clase "text-warning" para mostrar o quitar el color de favorito
+                estrellaIcono.classList.toggle("text-warning");
+
+                // Actualizar la variable isFavorite para reflejar el cambio
+                isFavorite = !isFavorite;
+            } else {
+                console.error('Error al actualizar el favorito');
+            }
+        })
+        .catch(error => console.error('Error:', error));
 }
 
 // Función para mostrar objetos por generación
@@ -196,9 +279,13 @@ function mostrarObjetosPorGeneracion(pokemon, asideContainer) {
 function mostrarFormasAlternas(pokemonName) {
     const contenedorFormas = document.getElementById("pokemon-forms");
     const contenedorPrincipal = document.getElementById("pokemon-main-container");
+    const contenedorDetalles = document.getElementById("pokemon-aside");
 
     // Asegúrate de limpiar el contenido previo
     contenedorFormas.innerHTML = "";
+    contenedorFormas.classList.remove("d-none"); // Asegúrate de que el contenedor sea visible inicialmente
+    contenedorPrincipal.classList.remove("col-md-12");
+    contenedorPrincipal.classList.add("col-md-8");
 
     // Obtener el nombre base del Pokémon (sin sufijos como -galar, -mega, etc.)
     const basePokemonName = pokemonName.split("-")[0];
@@ -222,13 +309,12 @@ function mostrarFormasAlternas(pokemonName) {
                 contenedorFormas.appendChild(tituloFormas);
 
                 varieties.forEach((variety) => {
-
                     fetch(variety.pokemon.url)
                         .then((response) => response.json())
                         .then((varietyData) => {
                             // Crear un contenedor para cada forma
                             const formaDiv = document.createElement("div");
-                            formaDiv.classList = "bg-danger", "d-flex", "flex-column", "align-items-center";
+                            formaDiv.classList.add("bg-danger", "d-flex", "flex-column", "align-items-center");
                             formaDiv.style.marginBottom = "10px";
                             formaDiv.style.paddingBottom = "7px";
                             formaDiv.style.borderRadius = "10px";
@@ -265,28 +351,24 @@ function mostrarFormasAlternas(pokemonName) {
                         });
                 });
             } else {
-                // Si no hay variedades, escondemos el div de formas y ajustamos el contenedor principal
-                contenedorFormas.style.display = "none";
-
-                // Cambiamos el otro contenedor al ancho completo (col-12)
-                if (contenedorPrincipal) {
-                    contenedorPrincipal.classList.remove("col-md-8");
-                    contenedorPrincipal.classList.add("col-md-12");
-                }
+                // Si no hay variedades, ocultamos el div de formas sin alterar el resto
+                ocultarFormasAlternas();
             }
         })
         .catch((error) => {
             console.error("Error al cargar las especies del Pokémon:", error);
-
-            // Si hay un error, también escondemos el div de formas por seguridad
-            contenedorFormas.style.display = "none";
-
-            if (contenedorPrincipal) {
-                contenedorPrincipal.classList.remove("col-md-8");
-                contenedorPrincipal.classList.add("col-md-12");
-            }
+            ocultarFormasAlternas();
         });
+
+    // Función para ocultar las formas alternas sin tocar el resto del aside
+    function ocultarFormasAlternas() {
+        contenedorFormas.classList.add("d-none");
+        contenedorDetalles.classList.remove("col-md-6");
+        contenedorDetalles.classList.add("col-md-12");
+    }
 }
+
+
 
 
 // Función para capitalizar la primera letra

@@ -11,7 +11,6 @@
     <script src="./js/pokeDatosSection.js" defer></script>
     <title>Pokemon Datos</title>
     <style>
-        /* Personalizaciones adicionales si es necesario */
         * {
             text-align: center;
         }
@@ -34,26 +33,19 @@
             font-size: 25px;
         }
 
-        .pokemon-type img {
-            width: 70px;
-            height: 30px;
-        }
-        
-        #pokemon-form {
-            max-height: 500px;  /* Ajusta la altura según sea necesario */
-            overflow-y: auto;   /* Esto permite que el contenido se desplace si es muy grande */
-            padding: 10px;
-            text-align: center; /* Opcional: centra el contenido */
-        }
-
-        section{
+        section {
             border-radius: 5px;
         }
 
-        #pokemon-movimientos{
+        #pokemon-movimientos {
             font-size: 0.9em;
         }
 
+        @media (max-width: 767px) {
+            section {
+                margin-top: 10px;
+        }
+}
     </style>
 </head>
 
@@ -61,34 +53,40 @@
 
     <?php include("./php/cabezera.php"); ?>
 
-    <main class="container-fluid d-flex justify-content-center align-items-start p-0">
-    <!-- Section para el contenido principal -->
-    <section id="pokemon-main-container" class="col-md-7 col-12 p-3 bg-white mt-5 mr-5 p-3 d-flex flex-column text-dark">
-        <div id="pokemon-stats" class="">
-            <h4>Base Stats:</h4>
-            <!-- Aquí mostramos las estadísticas bases del pokémon -->
-        </div>
-        <div id="pokemon-evolucion">
-            <h4>Evolution:</h4>
-            <!-- Aquí mostramos la línea evolutiva del pokémon -->
-        </div>
-        <div id="pokemon-movimientos" class="accordion mt-5">
-            <!-- Aquí mostramos los movimientos del pokémon -->
-        </div>
-    </section>
+    <main class="container d-flex flex-column flex-md-row justify-content-center align-items-start mt-5 col-md-10">
+        <!-- Section para el contenido principal -->
+        <section id="pokemon-main-container" class="col-12 col-md-7 p-3 bg-white mr-md-5 p-3 d-flex flex-column text-dark order-2 order-md-1">
+            <div id="pokemon-stats" class="">
+                <h4>Base Stats:</h4>
+                <!-- Aquí mostramos las estadísticas bases del pokémon -->
+            </div>
+            <div id="pokemon-evolucion" class="mt-3">
+                <h4>Evolution:</h4>
+                <!-- Aquí mostramos la línea evolutiva del pokémon -->
+            </div>
+            <div id="pokemon-movimientos" class="accordion mt-5">
+                <!-- Aquí mostramos los movimientos del pokémon -->
+            </div>
+        </section>
 
-    <!-- Aside para mostrar los datos del Pokémon -->
-    <aside class="col-md-4 col-12 bg-white mt-5 mr-3 p-3 d-flex flex-row text-dark">
-        <div id="pokemon-aside" class="col-6 text-center">
-            <!-- Aquí se insertarán los datos desde JavaScript -->
-        </div>
-        <div id="pokemon-forms" class="col-6 text-center"></div>
-    </aside>
-</main>
+        <!-- Aside para mostrar los datos del Pokémon -->
+        <aside class="col-12 col-md-5 bg-white p-3 d-flex flex-column flex-md-row text-dark order-1 order-md-2">
+            <!-- Contenedor principal con información del Pokémon -->
+            <div id="pokemon-aside" class="col-12 col-md-6 text-center">
+                <!-- Aquí se insertarán los datos desde JavaScript -->
+            </div>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+            <!-- Contenedor de las formas alternas -->
+            <div id="pokemon-forms" class="col-12 col-md-6 text-center mt-3 mt-md-0">
+                <!-- Las formas se agregarán aquí dinámicamente -->
+            </div>
+        </aside>
+
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 

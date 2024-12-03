@@ -33,7 +33,7 @@ function mostrarEstadisticas(stats) {
 
     // Crear un contenedor para las estadísticas
     const statsContainer = document.createElement("div");
-    statsContainer.className = "stats-container";
+    statsContainer.className = "stats-container mt-4";
 
     stats.forEach((stat) => {
         const statName = capitalizarPrimeraLetra(stat.stat.name); // Nombre de la estadística
@@ -41,17 +41,20 @@ function mostrarEstadisticas(stats) {
 
         // Crear un contenedor para cada estadística con clases de Bootstrap
         const statRow = document.createElement("div");
-        statRow.className = "d-flex align-items-center justify-content-center mb-3"; // Usar clases de Bootstrap para el layout
+        statRow.className = "d-flex align-items-center justify-content-center mb-3";
 
         // Crear una etiqueta para el nombre y el valor con clases de Bootstrap
         const statLabel = document.createElement("p");
         statLabel.textContent = `${statName}: ${baseStat}`;
-        statLabel.className = "mb-0 mr-3"; // Alineación con márgenes
-        statLabel.style.width = "280px";
+        statLabel.className = "mb-0 mr-3 text-end fw-bold"; // Alineación con márgenes
+        statLabel.style.width = "120px";
+        statLabel.style.maxWidth = "300px";
+        
 
         // Crear una barra de progreso utilizando las clases de Bootstrap
         const statBar = document.createElement("div");
-        statBar.className = "progress w-25"; // Usar la clase `progress` de Bootstrap y ajustar el ancho
+        statBar.className = "progress flex-grow-1";
+        statBar.style.maxWidth = "45%";
         statBar.style.height= "15px";
         statBar.style.border ="1px solid #dc3545";
         
@@ -61,7 +64,7 @@ function mostrarEstadisticas(stats) {
 
         // Barra dentro de la barra de progreso
         const statIndicator = document.createElement("div");
-        statIndicator.className = "progress-bar bg-danger"; // Usar clase para el color
+        statIndicator.className = "progress-bar bg-danger";
         statIndicator.style.width = `${progressWidth}%`; // Ajustar según el valor de base_stat (de 0 a 100)
         statIndicator.setAttribute("role", "progressbar");
         statIndicator.setAttribute("aria-valuenow", baseStat);
@@ -86,6 +89,7 @@ function mostrarEstadisticas(stats) {
     sectionContainer.appendChild(statsContainer);
 }
 
+// Función para obtener la línea evolutiva
 // Función para obtener la línea evolutiva
 function obtenerEvolucion(speciesUrl) {
     fetch(speciesUrl)
@@ -113,97 +117,133 @@ function obtenerEvolucion(speciesUrl) {
         .catch((error) => {
             console.error("Error:", error);
             const evolutionContainer = document.getElementById("pokemon-evolucion");
-            evolutionContainer.innerHTML += `<p>Error al cargar la línea evolutiva. Inténtelo más tarde.</p>`;
+            evolutionContainer.innerHTML = `<p>Error al cargar la línea evolutiva. Inténtelo más tarde.</p>`;
         });
 }
 
-// Función para mostrar la línea evolutiva con los métodos
+// Función para mostrar la línea evolutiva
 function mostrarEvoluciones(evolutionChain) {
     const evolutionContainer = document.getElementById("pokemon-evolucion");
-    evolutionContainer.innerHTML = `<h4>Evolution:</h4>`;
+    evolutionContainer.innerHTML = `<h4>Evolution:</h4>`; // Título de la sección de evoluciones
 
     const evolutionRow = document.createElement("div");
-    evolutionRow.className = "row d-flex align-items-center"; // Fila horizontal
+    evolutionRow.className = "row d-flex flex-column gap-3"; // Alineación vertical con espacio entre filas
 
-    // Recorrer la cadena evolutiva recursivamente
-    function agregarEvoluciones(chain) {
-        const evolutionCol = document.createElement("div");
-        evolutionCol.className = "col text-center"; // Contenedor para cada Pokémon
+    // Función recursiva para construir las rutas de evolución
+    function recorrerEvoluciones(chain, path = []) {
+        const currentPath = [...path];
 
-        // Nombre del Pokémon
-        const pokemonName = chain.species.name;
+        const currentPokemon = {
+            name: chain.species.name,
+            id: getPokemonIdFromUrl(chain.species.url),
+        };
+        currentPath.push(currentPokemon);
 
-        // Imagen del Pokémon (usar API de sprites)
-        const pokemonImage = document.createElement("img");
-        pokemonImage.alt = pokemonName;
-        pokemonImage.className = "img-fluid mb-2";
-        pokemonImage.style.width = "170px";
-        pokemonImage.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokemonIdFromUrl(chain.species.url)}.png`;
-
-        // Nombre debajo de la imagen
-        const pokemonLabel = document.createElement("p");
-        pokemonLabel.className = "mb-0 fw-bold";
-        pokemonLabel.textContent = capitalizarPrimeraLetra(pokemonName);
-
-        // Añadir imagen y texto al contenedor
-        evolutionCol.appendChild(pokemonImage);
-        evolutionCol.appendChild(pokemonLabel);
-
-        // Agregar el contenedor a la fila
-        evolutionRow.appendChild(evolutionCol);
-
-        // Si hay evoluciones, mostrar detalles del método entre ellas
         if (chain.evolves_to.length > 0) {
             chain.evolves_to.forEach((nextEvolution) => {
-                mostrarMetodoDeEvolucion(chain, evolutionRow); // Agregar detalles del método
-                agregarEvoluciones(nextEvolution); // Procesar la siguiente evolución
+                const methodDetails = nextEvolution.evolution_details[0];
+                const methodData = obtenerDatosMetodoDeEvolucion(methodDetails);
+                const newPath = [...currentPath];
+                newPath.push({ method: methodData });
+
+                recorrerEvoluciones(nextEvolution, newPath);
             });
-        }
-    }
-
-// Mostrar el método de evolución
-function mostrarMetodoDeEvolucion(chain, parentRow) {
-        const methodDetails = chain.evolves_to[0].evolution_details[0]; // Obtener los detalles
-        if (!methodDetails) return;
-    
-        const evolutionMethod = document.createElement("div");
-        evolutionMethod.className = "col text-center"; // Contenedor para el método
-        evolutionMethod.style.maxWidth = "150px";
-    
-        // Crear texto del método
-        let methodText = "Evolves by ";
-    
-        if (methodDetails.trigger.name === "level-up") {
-            methodText += `leveling up${methodDetails.min_level ? ` at level ${methodDetails.min_level}` : ""}`;
-        } else if (methodDetails.trigger.name === "use-item") {
-            methodText += `using ${capitalizarPrimeraLetra(methodDetails.item.name)}`;
-    
-            // Si el método incluye un objeto, añadir su imagen
-            const itemImage = document.createElement("img");
-            itemImage.alt = methodDetails.item.name;
-            itemImage.className = "img-fluid mx-auto d-block my-2";
-            itemImage.style.width = "55px";
-            itemImage.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${methodDetails.item.name}.png`;
-            evolutionMethod.appendChild(itemImage);
-        } else if (methodDetails.trigger.name === "trade") {
-            methodText += "trading";
         } else {
-            methodText += methodDetails.trigger.name;
+            mostrarCamino(currentPath);
         }
-    
-        // Mostrar el texto del método
-        const methodLabel = document.createElement("p");
-        methodLabel.className = "mb-0 small"; // Texto pequeño y gris
-        methodLabel.textContent = methodText;
-    
-        evolutionMethod.appendChild(methodLabel);
-        parentRow.appendChild(evolutionMethod);
     }
-    
 
-    agregarEvoluciones(evolutionChain); // Empezar con la cadena base
+    // Función para obtener un objeto con datos del método de evolución
+    function obtenerDatosMetodoDeEvolucion(methodDetails) {
+        if (!methodDetails) {
+            return { text: "Unknown method" };
+        }
+
+        let methodData = { text: "", itemName: null, itemImage: null };
+
+        if (methodDetails.trigger.name === "level-up") {
+            methodData.text = `Level up${methodDetails.min_level ? ` at level ${methodDetails.min_level}` : ""}`;
+        } else if (methodDetails.trigger.name === "use-item") {
+            const itemName = methodDetails.item.name;
+            methodData.text = `Use ${capitalizarPrimeraLetra(itemName)}`;
+            methodData.itemName = itemName;
+            methodData.itemImage = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${itemName}.png`;
+        } else if (methodDetails.trigger.name === "trade") {
+            methodData.text = "Trade";
+        } else {
+            methodData.text = capitalizarPrimeraLetra(methodDetails.trigger.name);
+        }
+
+        return methodData;
+    }
+
+    // Función para dibujar un camino completo
+    function mostrarCamino(path) {
+        const pathRow = document.createElement("div");
+        pathRow.className = "d-flex align-items-center flex-wrap justify-content-center gap-3"; // Alinear horizontalmente
+
+        path.forEach((node, index) => {
+            if (node.method) {
+                const methodDiv = document.createElement("div");
+                methodDiv.className = "text-muted small text-center";
+
+                const methodText = document.createElement("p");
+                methodText.className = "mb-1";
+                methodText.textContent = node.method.text;
+
+                methodDiv.appendChild(methodText);
+
+                if (node.method.itemImage) {
+                    const itemImg = document.createElement("img");
+                    itemImg.className = "img-fluid";
+                    itemImg.style.width = "40px";
+                    itemImg.src = node.method.itemImage;
+                    itemImg.alt = node.method.itemName;
+
+                    methodDiv.appendChild(itemImg);
+                }
+
+                pathRow.appendChild(methodDiv);
+            } else {
+                const pokemonDiv = document.createElement("div");
+                pokemonDiv.className = "text-center";
+
+                const pokemonImg = document.createElement("img");
+                pokemonImg.className = "img-fluid";
+                pokemonImg.alt = node.name;
+                pokemonImg.style.width = "150px";
+                pokemonImg.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${node.id}.png`;
+
+                // Añadir evento de clic para redirigir a la página de detalles
+                pokemonImg.style.cursor = "pointer";
+                pokemonImg.addEventListener("click", () => {
+                    window.location.href = `/pokemonDatos.php?name=${node.name}`; // Redirigir con el ID
+                });
+
+                const pokemonName = document.createElement("p");
+                pokemonName.className = "mb-0 fw-bold";
+                pokemonName.textContent = capitalizarPrimeraLetra(node.name);
+
+                pokemonDiv.appendChild(pokemonImg);
+                pokemonDiv.appendChild(pokemonName);
+
+                pathRow.appendChild(pokemonDiv);
+            }
+
+            if (index < path.length - 1 && !node.method) {
+                const separatorDiv = document.createElement("div");
+                separatorDiv.className = "text-muted small";
+                pathRow.appendChild(separatorDiv);
+            }
+        });
+
+        evolutionRow.appendChild(pathRow);
+    }
+
+    recorrerEvoluciones(evolutionChain); // Iniciar el recorrido desde la raíz de la evolución
     evolutionContainer.appendChild(evolutionRow); // Agregar la fila al contenedor principal
 }
+
 
 let currentSortColumn = null; // Guardamos la columna que estamos ordenando
 let currentSortOrder = "asc"; // Orden ascendente por defecto
