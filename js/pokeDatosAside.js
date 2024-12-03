@@ -28,11 +28,7 @@ function mostrarDetallesAside(pokemon) {
     const asideContainer = document.getElementById("pokemon-aside");
     asideContainer.innerHTML = ""; // Limpiar contenido previo
 
-     // Obtener el estado de favorito desde la base de datos (usando la sesión)
-     const isFavorite = (sessionStorage.getItem('pokefoto') === pokemon.name);
-
-
-    // Crear un contenedor para la estrella que ocupe todo el ancho
+    // Crear un contenedor para la estrella
     const estrellaContainer = document.createElement("div");
     estrellaContainer.style.position = "absolute";
     estrellaContainer.style.top = "5px";
@@ -44,48 +40,52 @@ function mostrarDetallesAside(pokemon) {
     estrellaIcono.setAttribute("width", "30");
     estrellaIcono.setAttribute("height", "30");
     estrellaIcono.setAttribute("fill", "currentColor");
-    estrellaIcono.setAttribute("class", "bi bi-star-fill");
+    estrellaIcono.setAttribute("class", "bi bi-star");
     estrellaIcono.setAttribute("viewBox", "0 0 16 16");
-
 
     const estrellaPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
     estrellaPath.setAttribute("d", "M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z");
     estrellaIcono.appendChild(estrellaPath);
 
-        // Hacer que la estrella sea clickeable para cambiar el estado de favorito
-        estrellaIcono.addEventListener('click', function () {
-            // Cambiar el estado de favorito al hacer clic
-            const nuevoEstadoFavorito = !isFavorite;  // Si es favorito, lo desmarcamos y viceversa
-    
-            // Actualizar la estrella visualmente
-            estrellaIcono.setAttribute("class", nuevoEstadoFavorito ? "bi bi-star-fill text-warning" : "bi bi-star");
-    
-            // Llamamos a una función que envíe los cambios al backend, usando Fetch para actualizar `pokefoto` del usuario.
-            fetch('../php/actualizar_favorito.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ nombre: pokemon.name, isFavorite: nuevoEstadoFavorito })
-            })
-            .then(response => response.text())  // Cambiar a text() para ver la respuesta completa
-            .then(data => {
-                console.log("Respuesta del servidor (texto crudo):", data);  // Registrar la respuesta completa
-                try {
-                    const jsonData = JSON.parse(data);  // Intentar parsear como JSON
-                    if (jsonData.success) {
-                        sessionStorage.setItem('pokefoto', nuevoEstadoFavorito ? pokemon.name : '');
-                    } else {
-                        console.error("Error al actualizar el favorito:", jsonData.error);
-                    }
-                } catch (error) {
-                    console.error("Error al parsear la respuesta como JSON:", error);
-                }
-            })
-            .catch(error => {
-                console.error("Error al hacer la petición:", error);
+    // Consultar al servidor para obtener el estado de favorito
+    fetch('./php/obtener_favorito.php')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success && data.pokefoto === pokemon.name) {
+                // Si el Pokémon es el favorito, mostrar la estrella dorada
+                estrellaIcono.setAttribute("class", "bi bi-star-fill text-warning");
+            }
+
+            // Hacer que la estrella sea clickeable para cambiar el estado de favorito
+            estrellaIcono.addEventListener('click', function () {
+                const nuevoEstadoFavorito = !estrellaIcono.classList.contains("text-warning");
+
+                // Actualizar la estrella visualmente
+                estrellaIcono.setAttribute("class", nuevoEstadoFavorito ? "bi bi-star-fill text-warning" : "bi bi-star");
+
+                // Enviar el cambio al servidor
+                fetch('./php/actualizar_favorito.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ nombre: pokemon.name, isFavorite: nuevoEstadoFavorito })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            sessionStorage.setItem('pokefoto', nuevoEstadoFavorito ? pokemon.name : '');
+                        } else {
+                            console.error("Error al actualizar el favorito:", data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error al hacer la petición:", error);
+                    });
             });
-            
+        })
+        .catch(error => {
+            console.error("Error al obtener el estado de favorito:", error);
         });
 
     // Agregar la estrella al contenedor de la estrella
@@ -150,6 +150,7 @@ function mostrarDetallesAside(pokemon) {
     mostrarObjetosPorGeneracion(pokemon, asideContainer);
 }
 
+
 // Función para manejar el cambio de favorito
 function alternarFavorito(pokemon) {
     fetch(`../php/actualizar_favorito.php?name=${pokemon.name}`)
@@ -174,26 +175,26 @@ function mostrarObjetosPorGeneracion(pokemon, asideContainer) {
         "red": 1,
         "blue": 1,
         "yellow": 1,
-        "firered": 1,
-        "leafgreen": 1,
         "gold": 2,
         "silver": 2,
-        "heartgold": 2,
-        "soulsilver": 2,
         "ruby": 3,
         "sapphire": 3,
         "emerald": 3,
-        "omega-ruby": 3,
-        "alpha-sapphire": 3,
+        "firered": 3,
+        "leafgreen": 3,
         "diamond": 4,
         "pearl": 4,
         "platinum": 4,
+        "heartgold": 4,
+        "soulsilver": 4,
         "black": 5,
         "white": 5,
         "black-2": 5,
         "white-2": 5,
         "x": 6,
         "y": 6,
+        "omega-ruby": 6,
+        "alpha-sapphire": 6,
         "sun": 7,
         "moon": 7,
         "ultra-sun": 7,
