@@ -206,62 +206,9 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // Función para cargar y mostrar todos los objetos
-    function loadAllItems() {
-        const objectContainer = document.getElementById("item-suggestions-container");
-
-        if (!objectContainer) {
-            console.error("Contenedor de sugerencias de objetos no encontrado.");
-            return;
-        }
-
-        fetch("https://pokeapi.co/api/v2/item?limit=2000")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`Error al obtener los objetos: ${response.statusText}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                const items = data.results;
-                objectContainer.innerHTML = "";
-
-                items.forEach(item => {
-                    const listItem = document.createElement("li");
-                    listItem.textContent = item.name;
-                    listItem.classList.add("list-group-item", "text-dark");
-                    objectContainer.appendChild(listItem);
-                });
-
-                console.log("Objetos cargados correctamente:", items.length);
-            })
-            .catch(error => {
-                console.error("No se han podido mostrar todos los objetos:", error);
-            });
-    }
-
-    // Inicializar elementos dinámicos y cargar objetos
-    document.addEventListener("DOMContentLoaded", () => {
+    const observer = new MutationObserver(() => {
         initializeDynamicElements();
 
-        // Usar MutationObserver para esperar la creación del contenedor
-        const observer = new MutationObserver(() => {
-            const itemSuggestionsContainer = document.getElementById("item-suggestions-container");
-            if (itemSuggestionsContainer) {
-                loadAllItems();
-                observer.disconnect();
-            }
-        });
-
-        observer.observe(document.body, { childList: true, subtree: true });
-    });
-
-    const observer = new MutationObserver(() => {
-        const itemSuggestionsContainer = document.getElementById("item-suggestions-container");
-        if (itemSuggestionsContainer) {
-            loadAllItems(); // Llama a la función solo cuando el contenedor exista
-            observer.disconnect(); // Detener el observador después de encontrar el contenedor
-        }
     });
     
     observer.observe(document.body, { childList: true, subtree: true });
@@ -270,3 +217,124 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 });
+
+
+// Función para cargar y mostrar todos los objetos con autocompletado y visibilidad controlada
+function loadFilteredItems() {
+    const objectContainer = document.getElementById("item-suggestions-container");
+    const objectInput = document.getElementById("pokemon-object-input");
+
+    if (!objectContainer || !objectInput) {
+        console.error("Contenedor de sugerencias o input de objetos no encontrado.");
+        return;
+    }
+
+    // Categorías permitidas
+    const allowedCategories = [
+        "medicine",
+        "other",
+        "in-a-pinch",
+        "picky-healing",
+        "type-protection",
+        "evolution",
+        "held-items",
+        "choice",
+        "bad-held-items",
+        "plates",
+        "species-specific",
+        "type-enhancement",
+        "mega-stones",
+        "jewels",
+    ];
+
+    let allItems = []; // Para almacenar todos los objetos cargados
+
+    fetch("https://pokeapi.co/api/v2/item?limit=10000")
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error al obtener los objetos: ${response.statusText}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            const items = data.results;
+
+            // Crear una lista de promesas para obtener detalles de cada objeto
+            const promises = items.map(item =>
+                fetch(item.url)
+                    .then(response => response.json())
+                    .then(details => {
+                        const category = details.category.name;
+                        if (allowedCategories.includes(category)) {
+                            allItems.push(item.name); // Agregar nombre del objeto a la lista
+                        }
+                    })
+                    .catch(error => console.error(`Error al obtener detalles de ${item.name}:`, error))
+            );
+
+            // Esperar a que todas las promesas se completen
+            return Promise.all(promises).then(() => allItems);
+        })
+        .then(() => {
+            // Mostrar inicialmente los primeros objetos
+            displayItems(allItems);
+
+            // Mostrar lista al hacer foco en el input
+            objectInput.addEventListener("focus", () => {
+                objectContainer.style.display = "block";
+            });
+
+            // Ocultar lista al hacer clic fuera del input y del contenedor
+            document.addEventListener("click", (event) => {
+                if (
+                    !objectInput.contains(event.target) && 
+                    !objectContainer.contains(event.target)
+                ) {
+                    objectContainer.style.display = "none";
+                }
+            });
+
+            // Evento de autocompletar
+            objectInput.addEventListener("input", () => {
+                const query = objectInput.value.trim().toLowerCase();
+                const filteredItems = allItems.filter(item => item.includes(query));
+                displayItems(filteredItems);
+            });
+
+            console.log("Objetos cargados correctamente:", allItems.length);
+        })
+        .catch(error => {
+            console.error("No se han podido mostrar los objetos filtrados:", error);
+        });
+
+    // Función para mostrar objetos en el contenedor
+    function displayItems(items) {
+        objectContainer.innerHTML = ""; // Limpiar contenedor antes de agregar elementos
+        items.forEach(item => {
+            const listItem = document.createElement("li");
+            listItem.textContent = item; // Mostrar el nombre del objeto
+            listItem.classList.add("list-group-item", "text-dark");
+            listItem.addEventListener("click", (event) => {
+                event.preventDefault(); // Evitar perder el foco del input
+                objectInput.value = item; // Autocompletar input al seleccionar un elemento
+                objectContainer.style.display = "none"; // Ocultar sugerencias al seleccionar
+            });
+            objectContainer.appendChild(listItem);
+        });
+    }
+}
+
+// Llamar a la función
+document.addEventListener("DOMContentLoaded", () => {
+    const observer = new MutationObserver(() => {
+        const itemSuggestionsContainer = document.getElementById("item-suggestions-container");
+        const itemInput = document.getElementById("pokemon-object-input");
+        if (itemSuggestionsContainer && itemInput) {
+            loadFilteredItems(); // Llama a la función solo cuando el contenedor exista
+            observer.disconnect();
+        }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+});
+
