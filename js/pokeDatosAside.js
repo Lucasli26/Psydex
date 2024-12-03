@@ -12,7 +12,7 @@ if (pokemonName) {
             return response.json();
         })
         .then((pokemonData) => {
-            mostrarDetallesAside(pokemonData); // Mostrar en el aside
+            mostrarDetallesAside(pokemonData); // Mostrar datos
             mostrarFormasAlternas(pokemonName); // Mostrar formas alternas
         })
         .catch((error) => {
