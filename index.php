@@ -75,11 +75,11 @@ include("./php/cabezera.php");
   </div>
 
 <!-- Archivo principal de JavaScript -->
-<script src="./script.js"></script>
+<script src="./js/script.js"></script>
 <!-- archivos de filtro -->
 <script src="./js/filtros.js"></script>
 <!-- Archivo de búsqueda de JavaScript -->
-<script src="./buscador.js"></script>
+<script src="./js/buscador.js"></script>
 
 </body>
 
