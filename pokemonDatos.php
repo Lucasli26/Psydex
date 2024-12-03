@@ -44,8 +44,20 @@
         @media (max-width: 767px) {
             section {
                 margin-top: 10px;
+            }
+
+                .flex-md-row {
+                flex-direction: column !important;
+            }
+
+            #pokemon-evolucion img {
+                width: 120px;
+            }
+
+            .method-responsive {
+                margin: 2rem !important;
+            }
         }
-}
     </style>
 </head>
 

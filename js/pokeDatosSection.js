@@ -90,7 +90,6 @@ function mostrarEstadisticas(stats) {
 }
 
 // Función para obtener la línea evolutiva
-// Función para obtener la línea evolutiva
 function obtenerEvolucion(speciesUrl) {
     fetch(speciesUrl)
         .then((response) => {
@@ -124,7 +123,6 @@ function obtenerEvolucion(speciesUrl) {
 // Función para mostrar la línea evolutiva
 function mostrarEvoluciones(evolutionChain) {
     const evolutionContainer = document.getElementById("pokemon-evolucion");
-    evolutionContainer.innerHTML = `<h4>Evolution:</h4>`; // Título de la sección de evoluciones
 
     const evolutionRow = document.createElement("div");
     evolutionRow.className = "row d-flex flex-column gap-3"; // Alineación vertical con espacio entre filas
@@ -180,12 +178,12 @@ function mostrarEvoluciones(evolutionChain) {
     // Función para dibujar un camino completo
     function mostrarCamino(path) {
         const pathRow = document.createElement("div");
-        pathRow.className = "d-flex align-items-center flex-wrap justify-content-center gap-3"; // Alinear horizontalmente
+        pathRow.className = "d-flex flex-wrap align-items-center justify-content-center gap-3 flex-column flex-md-row"; // Alinear en columna o fila según pantalla
 
         path.forEach((node, index) => {
             if (node.method) {
                 const methodDiv = document.createElement("div");
-                methodDiv.className = "text-muted small text-center";
+                methodDiv.className = "text-muted small text-center method-responsive";
 
                 const methodText = document.createElement("p");
                 methodText.className = "mb-1";
@@ -217,7 +215,7 @@ function mostrarEvoluciones(evolutionChain) {
                 // Añadir evento de clic para redirigir a la página de detalles
                 pokemonImg.style.cursor = "pointer";
                 pokemonImg.addEventListener("click", () => {
-                    window.location.href = `/pokemonDatos.php?name=${node.name}`; // Redirigir con el ID
+                    window.location.href = `./pokemonDatos.php?name=${node.name}`; // Redirigir con el ID
                 });
 
                 const pokemonName = document.createElement("p");
@@ -243,7 +241,6 @@ function mostrarEvoluciones(evolutionChain) {
     recorrerEvoluciones(evolutionChain); // Iniciar el recorrido desde la raíz de la evolución
     evolutionContainer.appendChild(evolutionRow); // Agregar la fila al contenedor principal
 }
-
 
 let currentSortColumn = null; // Guardamos la columna que estamos ordenando
 let currentSortOrder = "asc"; // Orden ascendente por defecto
