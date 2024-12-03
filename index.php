@@ -40,6 +40,22 @@ try {
 include("./php/cabezera.php");
 ?>
 
+<div class="filters-container d-flex justify-content-center align-items-center mt-3">
+    <div class="form-group mx-2">
+        <label for="filterOrder" class="text-white">Orden:</label>
+        <select id="filterOrder" class="form-control">
+            <option value="number">Número</option>
+            <option value="name">Alfabético</option>
+        </select>
+    </div>
+    <div class="form-group mx-2">
+        <label for="filterType" class="text-white">Tipo:</label>
+        <select id="filterType" class="form-control">
+            <option value="all">Todos</option>
+        </select>
+    </div>
+    <button id="applyFilters" class="btn btn-warning mx-2">Aplicar</button>
+</div>
 
 <div class="d-flex-search-container mt-2">
   <div class="d-flex ">
@@ -60,6 +76,8 @@ include("./php/cabezera.php");
 
 <!-- Archivo principal de JavaScript -->
 <script src="./script.js"></script>
+<!-- archivos de filtro -->
+<script src="./js/filtros.js"></script>
 <!-- Archivo de búsqueda de JavaScript -->
 <script src="./buscador.js"></script>
 
