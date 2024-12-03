@@ -2,9 +2,74 @@ const POKEAPI_BASE_URL = "https://pokeapi.co/api/v2/pokemon/";
 const ITEM_API_BASE_URL = "https://pokeapi.co/api/v2/item/";
 
 document.addEventListener("DOMContentLoaded", () => {
+    const pokemonContainer = document.getElementById("pokemon-container");
+
+    // Función para cargar el botón si hay 5 o menos movesets
+    async function checkMovesetCount() {
+        try {
+            const teamCount = document.getElementById('team-count').value;
+            console.log("Team count:", teamCount);
+
+            if (teamCount <= 5) {
+                addNewMovesetButton();
+            }
+        } catch (error) {
+            console.error("Error al verificar el conteo de movesets:", error);
+        }
+    }
+
+    function addNewMovesetButton() {
+        const pokemonContainer = document.getElementById("pokemon-container");
+        if (!pokemonContainer) {
+            console.error("Contenedor no encontrado: #pokemon-container");
+            return;
+        }
+
+        const button = document.createElement("button");
+        button.classList.add("btn", "btn-success", "my-3");
+
+        // Crear el SVG para el icono
+        const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        icon.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        icon.setAttribute("width", "40");
+        icon.setAttribute("height", "40");
+        icon.setAttribute("fill", "currentColor");
+        icon.setAttribute("class", "bi bi-patch-plus-fill");
+        icon.setAttribute("viewBox", "0 0 16 16");
+
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute(
+            "d",
+            "M10.067.87a2.89 2.89 0 0 0-4.134 0l-.622.638-.89-.011a2.89 2.89 0 0 0-2.924 2.924l.01.89-.636.622a2.89 2.89 0 0 0 0 4.134l.637.622-.011.89a2.89 2.89 0 0 0 2.924 2.924l.89-.01.622.636a2.89 2.89 0 0 0 4.134 0l.622-.637.89.011a2.89 2.89 0 0 0 2.924-2.924l-.01-.89.636-.622a2.89 2.89 0 0 0 0-4.134l-.637-.622.011-.89a2.89 2.89 0 0 0-2.924-2.924l-.89.01zM8.5 6v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 1 0"
+        );
+
+        icon.appendChild(path);
+
+        // Agregar el SVG al botón
+        button.appendChild(icon);
+
+        button.onclick = () => {
+            // alert("Nuevo moveset añadido"); // Acción para añadir moveset
+            const url = `./php/añadir_moveset.php`;
+            window.location.href = url;
+        };
+
+        // Agregar el botón al contenedor
+        pokemonContainer.appendChild(button);
+    }
+
+    // Llamar a la función para verificar y agregar el botón si es necesario
+    checkMovesetCount();
+});
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
     const movesets = JSON.parse(document.getElementById("movesets-data").value); // Cargamos los datos del PHP
     const pokemonContainer = document.getElementById("pokemon-container");
     const detailsContainerId = "details-container";
+    
 
     function showPokemonDetails(moveset) {
         const detailsContainer = document.getElementById(detailsContainerId) || createDetailsContainer();
@@ -19,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Usamos el nuevo parámetro `isNameInput` para asignar el ID y las clases al input de nombre
         const nameInput = createTextbox("Nombre del Pokémon:", moveset.pokemon, true);
-        const ejemplo = moveset.pokemon;
+        const ejemplo = moveset.id;
         // Crear el contenedor de sugerencias
         const suggestionsContainer = document.createElement("ul");
         suggestionsContainer.id = "suggestions-container"; // id para el contenedor de sugerencias
@@ -124,10 +189,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Crear y agregar el botón con el icono
         const buttonContainer = document.createElement("div");
-        buttonContainer.classList.add("col-md-12");
+        buttonContainer.classList.add("col-md-12", "d-flex", "justify-content-center");
 
         const button = document.createElement("button");
-        button.classList.add("btn", "btn-primary", "mb-2");
+        button.classList.add("btn", "btn-primary", "m-2");
 
         // Crear el SVG para el icono
         const icon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -199,6 +264,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     evs: evs,
                     ivs: ivs,
                     pokemonId: ejemplo,
+
                 });
         
                 const url = `./php/update_moves.php?${queryParams.toString()}`;
@@ -207,13 +273,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.error("Error al recolectar o enviar los datos:", error);
                 alert("Error al recolectar o enviar los datos. Revisa la consola para más detalles.");
             }
-        };
-        
-        
-        
-        
-        
-        
+        }; 
         
         // Función para mostrar el mensaje "Paste!" debajo del botón
         function showPasteMessage(button) {
@@ -241,6 +301,104 @@ document.addEventListener("DOMContentLoaded", () => {
         // Agregar la fila con los detalles al contenedor de detalles
         detailsContainer.appendChild(row);
 
+        const buttonB = document.createElement("button");
+        buttonB.classList.add("btn", "btn-danger", "m-2");
+
+        // Crear el SVG para el icono
+        const iconB = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        iconB.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        iconB.setAttribute("width", "25");
+        iconB.setAttribute("height", "25");
+        iconB.setAttribute("fill", "currentColor");
+        iconB.setAttribute("class", "bi bi-patch-check-fill");
+        iconB.setAttribute("viewBox", "0 0 16 16");
+
+        // Crear el path del icono
+        const pathB = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        pathB.setAttribute("d", "M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0");
+
+        // Añadir el path al SVG
+        iconB.appendChild(pathB);
+
+        // Agregar el SVG al botón
+        buttonB.appendChild(iconB);
+
+        buttonB.onclick = () => {
+            // Crear un contenedor para el mensaje de confirmación
+            const confirmationContainer = document.createElement("div");
+            confirmationContainer.style.position = "fixed";
+            confirmationContainer.style.top = "0";
+            confirmationContainer.style.left = "0";
+            confirmationContainer.style.width = "100%";
+            confirmationContainer.style.height = "100%";
+            confirmationContainer.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            confirmationContainer.style.display = "flex";
+            confirmationContainer.style.justifyContent = "center";
+            confirmationContainer.style.alignItems = "center";
+            confirmationContainer.style.zIndex = "1000";
+        
+            // Crear el cuadro de confirmación
+            const confirmationBox = document.createElement("div");
+            confirmationBox.style.backgroundColor = "#fff";
+            confirmationBox.style.padding = "20px";
+            confirmationBox.style.borderRadius = "10px";
+            confirmationBox.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+            confirmationBox.style.textAlign = "center";
+            confirmationBox.style.width = "300px";
+        
+            // Texto de confirmación
+            const message = document.createElement("p");
+            message.textContent = "¿Deseas borrar el Pokémon?";
+            confirmationBox.appendChild(message);
+        
+            // Botón Yes
+            const yesButton = document.createElement("button");
+            yesButton.textContent = "Sí";
+            yesButton.style.margin = "10px";
+            yesButton.style.padding = "10px 20px";
+            yesButton.style.backgroundColor = "#28a745";
+            yesButton.style.color = "#fff";
+            yesButton.style.border = "none";
+            yesButton.style.borderRadius = "5px";
+            yesButton.style.cursor = "pointer";
+            yesButton.onclick = () => {
+                const url = `./php/eliminar_pokemon.php?IDPokemon=${ejemplo}`;
+                window.location.href = url; // Redirigir al script de eliminación
+                // alert (ejemplo);
+            };
+        
+            // Botón No
+            const noButton = document.createElement("button");
+            noButton.textContent = "No";
+            noButton.style.margin = "10px";
+            noButton.style.padding = "10px 20px";
+            noButton.style.backgroundColor = "#dc3545";
+            noButton.style.color = "#fff";
+            noButton.style.border = "none";
+            noButton.style.borderRadius = "5px";
+            noButton.style.cursor = "pointer";
+            noButton.onclick = () => {
+                document.body.removeChild(confirmationContainer); // Cerrar el cuadro de confirmación
+            };
+        
+            // Agregar los botones al cuadro de confirmación
+            confirmationBox.appendChild(yesButton);
+            confirmationBox.appendChild(noButton);
+        
+            // Agregar el cuadro de confirmación al contenedor
+            confirmationContainer.appendChild(confirmationBox);
+        
+            // Agregar el contenedor al body
+            document.body.appendChild(confirmationContainer);
+        };
+        
+
+        // Añadir el botón al contenedor
+        buttonContainer.appendChild(buttonB);
+        // Agregar el contenedor del botón al contenedor de detalles
+        detailsContainer.appendChild(buttonContainer);
+        // Agregar la fila con los detalles al contenedor de detalles
+        detailsContainer.appendChild(row);
     }
 
 /**
@@ -281,9 +439,6 @@ function createTextbox(labelText, value, isNameInput = false, isMoveInput = fals
     div.appendChild(input);
     return div;
 }
-
-
-
 
     /**
      * Crear un dropdown con etiqueta

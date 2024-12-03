@@ -44,21 +44,21 @@ if ($team) {
     exit;
 }
 
-// Obtener el id del moveset asociado al equipo mediante la tabla intermedia equipo-set
-$query = $db->prepare("SELECT es.moveset FROM equipo_set es WHERE es.equipo = :teamId");
-$query->bindParam(':teamId', $teamId);
-$query->execute();
-$equipoSet = $query->fetch(PDO::FETCH_ASSOC);
+// // Obtener el id del moveset asociado al equipo mediante la tabla intermedia equipo-set
+// $query = $db->prepare("SELECT es.moveset FROM equipo_set es WHERE es.equipo = :teamId");
+// $query->bindParam(':teamId', $teamId);
+// $query->execute();
+// $equipoSet = $query->fetch(PDO::FETCH_ASSOC);
 
-if ($equipoSet) {
-    $movesetId = $equipoSet['moveset'];
-    echo "El ID del moveset relacionado con el equipo es: " . $movesetId . "<br>";
-} else {
-    echo "No se encontró el moveset relacionado con el equipo.<br>";
-    exit;
-}
+// if ($equipoSet) {
+//     $movesetId = $equipoSet['moveset'];
+//     echo "El ID del moveset relacionado con el equipo es: " . $movesetId . "<br>";
+// } else {
+//     echo "No se encontró el moveset relacionado con el equipo.<br>";
+//     exit;
+// }
 
-// Actualizar el moveset en la base de datos
+// Actualizar el moveset en la base de datos para el moveset encontrado
 $query = $db->prepare("
     UPDATE moveset 
     SET pokemon = :pokemon,
@@ -69,7 +69,7 @@ $query = $db->prepare("
         moves = :moves,
         evs = :evs,
         ivs = :ivs
-    WHERE pokemon = :pokemonId
+    WHERE id = :IDPokemon
 ");
 
 $query->bindParam(':pokemon', $pokemon);
@@ -80,15 +80,14 @@ $query->bindParam(':naturaleza', $naturaleza);
 $query->bindParam(':moves', $moves);
 $query->bindParam(':evs', $evs);
 $query->bindParam(':ivs', $ivs);
-$query->bindParam(':pokemonId', $pokemonId);
-
-// $query->debugDumpParams(); // Debugging para ver los valores pasados
+$query->bindParam(':IDPokemon', $pokemonId);
 
 // Ejecutar la actualización
 if ($query->execute()) {
-    // echo "Actualización exitosa.";
-    header("Location: ../teambuilder.php?teamName=". $teamName ."");
+    echo "Actualización exitosa.";
+    header("Location: ../teambuilder.php?teamName=" . $teamName);
 } else {
     echo "Error al actualizar los datos.";
 }
+
 ?>

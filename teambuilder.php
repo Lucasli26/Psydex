@@ -24,8 +24,16 @@ if ($team) {
     exit;
 }
 
+// En tu archivo PHP (por ejemplo, equipo.php)
+$query = "SELECT COUNT(*) as count FROM equipo_set WHERE equipo = ?";
+$stmt = $pdo->prepare($query);
+$stmt->execute([$teamId]);
+$result = $stmt->fetch(PDO::FETCH_ASSOC);
+$result["count"];
+
 $query = $db->prepare("
     SELECT 
+        moveset.id,
         moveset.pokemon, 
         moveset.habilidades, 
         moveset.teratipo, 
@@ -101,6 +109,7 @@ $movesets = $query->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Input oculto con los datos del equipo -->
     <input type="hidden" id="movesets-data" value="<?php echo htmlspecialchars(json_encode($movesets)); ?>">
+    <input type="hidden" id="team-count" value="<?php echo $result['count']; ?>">
 
 
     <!-- Cargar el archivo JS -->

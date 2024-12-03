@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Mostrar sugerencias de movimientos
     function displayMoveSuggestions(moves, moveInput) {
         movesContainer.innerHTML = ""; 
-        movesContainer.style.maxHeight = "150px";
+        movesContainer.style.maxHeight = "400px";
         movesContainer.style.overflowY = "scroll";
 
         moves.forEach(move => {
