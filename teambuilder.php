@@ -9,7 +9,8 @@ try {
 
 // Capturamos el ID del equipo desde la URL
 $teamName = isset($_GET['teamName']) ? htmlspecialchars($_GET['teamName']) : 'Equipo no especificado';
-
+// Almacenas el nombre del equipo en la sesión
+$_SESSION['equipo'] = $teamName;
 // Obtener el ID del equipo usando el nombre del equipo
 $query = $db->prepare("SELECT id FROM equipos WHERE nombre = :teamName");
 $query->bindParam(':teamName', $teamName);
@@ -47,8 +48,6 @@ $query->bindParam(':teamId', $teamId);
 $query->execute();
 $movesets = $query->fetchAll(PDO::FETCH_ASSOC);
 
-
-
 ?>
 
 <!DOCTYPE html>
@@ -61,22 +60,34 @@ $movesets = $query->fetchAll(PDO::FETCH_ASSOC);
     <link rel="icon" href="./img/Psydex.png" type="image/png">
     <link rel="stylesheet" href="./css/css.css">
     <style>
-      .pokemon-card{
-        width: 250px;
-      }
-      /* Ajustar el tamaño de los inputs y espaciado */
-      #details-container input,
-      #details-container select {
-          height: 40px; /* Reducir altura */
-          margin-bottom: 8px; /* Separación entre elementos */
-      }
+        .pokemon-card{
+            width: 250px;
+        }
+        /* Ajustar el tamaño de los inputs y espaciado */
+        #details-container input,
+        #details-container select {
+            height: 40px; /* Reducir altura */
+            margin-bottom: 8px; /* Separación entre elementos */
+        }
 
-      /* Alinear elementos */
-      .item-sprite {
-          vertical-align: middle;
-          margin-left: 10px;
-      }
-
+        /* Alinear elementos */
+        .item-sprite {
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+        #item-suggestions-container {
+            max-height: 150px; /* Altura máxima visible */
+            overflow-y: auto; /* Habilitar scroll vertical */
+            border: 1px solid #ccc; /* Añadir un borde para resaltar el contenedor */
+            border-radius: 5px;
+            background-color: #fff;
+            z-index: 0; /* Asegurar que esté en el flujo normal */
+            width: 100%; /* Asegurar que el ancho coincide con el input */
+            display: none; /* Ocultar por defecto */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra sutil */
+            top: 300px; /* Espacio entre el input y el contenedor */
+            position: relative; /* Mantener el contenedor en el flujo del documento */
+        }
     </style>
 </head>
 <body class="bg-dark text-center d-flex flex-column align-items-center">
@@ -90,7 +101,8 @@ $movesets = $query->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- Input oculto con los datos del equipo -->
     <input type="hidden" id="movesets-data" value="<?php echo htmlspecialchars(json_encode($movesets)); ?>">
-    
+
+
     <!-- Cargar el archivo JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="./js/ev-iv.js"></script>

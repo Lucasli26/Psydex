@@ -24,8 +24,8 @@ function parseEVString(evString) {
  */
 function createEVTextboxes(evString) {
     const evSection = document.createElement("div");
-    evSection.classList.add("mt-3", "text-center");
-
+    evSection.classList.add("mt-3", "text-center", "ev-section");
+    
     // Etiqueta principal
     const evLabel = document.createElement("h6");
     evLabel.textContent = "EVs:";
@@ -147,7 +147,7 @@ function updateEVTotal(stat, value, totalDisplay, rowContainer) {
  */
 function createIVTextboxes(ivString) {
     const ivSection = document.createElement("div");
-    ivSection.classList.add("mt-3", "text-center");
+    ivSection.classList.add("mt-3", "text-center", "iv-section");
 
     // Etiqueta principal
     const ivLabel = document.createElement("h6");
