@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function displaySuggestions(pokemonList) {
         suggestionsContainer.innerHTML = "";
         if (pokemonList.length === 0) {
-            suggestionsContainer.innerHTML = "<li>No se encontraron Pokémon</li>";
+            suggestionsContainer.innerHTML = "<li>Not found this Pokémon</li>";
             return;
         }
         pokemonList.forEach(pokemon => {

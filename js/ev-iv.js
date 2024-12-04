@@ -41,7 +41,7 @@ function createEVTextboxes(evString) {
 
     const totalEVContainer = document.createElement("p");
     totalEVContainer.classList.add("text-warning", "small", "mb-2");
-    totalEVContainer.textContent = `Puntos totales: ${evs.total}/508`;
+    totalEVContainer.textContent = `Total Points: ${evs.total}/508`;
     evSection.appendChild(totalEVContainer);
 
     // Crear los inputs para cada estadística
@@ -81,7 +81,7 @@ function createEVTextboxes(evString) {
 
     // Botón de reinicio
     const resetButton = document.createElement("button");
-    resetButton.textContent = "Reiniciar EVs";
+    resetButton.textContent = "Restart EVs";
     resetButton.classList.add("btn", "btn-danger", "mt-3");
     resetButton.onclick = () => {
         resetEVs(rowContainer, totalEVContainer);
@@ -102,7 +102,7 @@ function resetEVs(rowContainer, totalDisplay) {
         input.value = 0; // Reiniciar cada input a 0
         input.disabled = false; // Asegurarse de que estén habilitados
     });
-    totalDisplay.textContent = `Puntos totales: 0/508`; // Actualizar el contador de puntos totales
+    totalDisplay.textContent = `Total Points: 0/508`; // Actualizar el contador de puntos totales
 }
 
 
@@ -131,7 +131,7 @@ function updateEVTotal(stat, value, totalDisplay, rowContainer) {
         total = maxEVs;
     }
 
-    totalDisplay.textContent = `Puntos totales: ${total}/508`;
+    totalDisplay.textContent = `Total Points: ${total}/508`;
 
     // Deshabilitar inputs si el total alcanza el máximo
     inputs.forEach(input => {

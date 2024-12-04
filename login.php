@@ -66,7 +66,7 @@ include("./php/conexion.php");
                 <?php
                     if (isset($users)) {
                         if ($users === false) {
-                            echo "El Correo, Nombre o Contraseña están incorrectos";
+                            echo "Email/Name or Password Incorrect";
                         } else {
                             session_start();
                             $_SESSION["usu"] = $users["nombre"];
@@ -80,25 +80,25 @@ include("./php/conexion.php");
 
             <!-- Sección de bienvenida -->
             <div class="col-12 col-md-4 text-center d-flex flex-column align-items-center justify-content-center mb-3 mb-md-0">
-                <h2>Bienvenid@s</h2>
-                <h5>A la mejor Pokedex jamás creada.</h5>
+                <h2>WelMuk</h2>
+                <h5>Log in and create your perfect team or log in as guest and view our dex.</h5>
             </div>
 
             <!-- Formulario de inicio de sesión -->
             <div class="col-12 col-md-8">
                 <form method="post" class="text-center">
                     <div class="form-group d-flex flex-column align-items-center justify-content-center">
-                        <label for="exampleInputEmail1">Correo electrónico / Nombre</label>
-                        <input type="text" name="correoNombre" class="form-control" id="exampleInputEmail1" placeholder="Ingrese su correo o nombre">
+                        <label for="exampleInputEmail1">Email / Username</label>
+                        <input type="text" name="correoNombre" class="form-control" id="exampleInputEmail1" placeholder="Email or Username">
                     </div>
                     <div class="form-group d-flex flex-column align-items-center justify-content-center">
-                        <label for="exampleInputPassword1">Contraseña</label>
-                        <input type="password" name="con" class="form-control" id="exampleInputPassword1" placeholder="Contraseña">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" name="con" class="form-control" id="exampleInputPassword1" placeholder="Password">
                     </div>
                     <div class="d-flex flex-column flex-md-row justify-content-center align-items-center">
-                        <button type="submit" class="btn btn-dark border-white me-0 me-md-2 mb-2 mb-md-0">Iniciar sesión</button>
-                        <a href="./newUsuario.php" class="btn btn-dark border-white">Registrarse</a>
-                        <a href="./index.php" class="btn btn-dark border-white">Invitado</a>
+                        <button type="submit" class="btn btn-dark border-white me-0 me-md-2 mb-md-0">Log In</button>
+                        <a href="./newUsuario.php" class="btn btn-dark border-white m-2">Sign Up</a>
+                        <a href="./index.php" class="btn btn-dark border-white">Guest</a>
                     </div>
                     
                 </form>

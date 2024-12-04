@@ -83,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         leftCol.classList.add("col-md-4", "mb-3");
 
         // Usamos el nuevo parámetro `isNameInput` para asignar el ID y las clases al input de nombre
-        const nameInput = createTextbox("Nombre del Pokémon:", moveset.pokemon, true);
+        const nameInput = createTextbox("Pokémon:", moveset.pokemon, true);
         const ejemplo = moveset.id;
         // Crear el contenedor de sugerencias
         const suggestionsContainer = document.createElement("ul");
@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
         suggestionsContainer.classList.add("list-group", "text-danger"); // clases para el contenedor de sugerencias
 
         // Crear el input de habilidad
-        const abilityInput = createTextbox("Habilidad:", moveset.habilidades, false, false, true);
+        const abilityInput = createTextbox("Ability:", moveset.habilidades, false, false, true);
 
         // Crear el contenedor de sugerencias
         const abilityContainer = document.createElement("ul");
@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         itemContainer.classList.add("form-group", "d-flex", "flex-column", "align-items-center", "justify-content-center");
                 
                 const itemLabel = document.createElement("label");
-                itemLabel.textContent = "Objeto:";
+                itemLabel.textContent = "Item:";
                 itemLabel.classList.add("mr-2");
                 
                 // Crear el input de texto para el objeto
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 itemInput.value = moveset.objeto; // El valor por defecto será el objeto del moveset
                 itemInput.classList.add("form-control", "mr-2");
                 itemInput.id = "pokemon-object-input";
-                itemInput.placeholder = "Buscar o escribir objeto..."; // Placeholder para sugerencias
+                itemInput.placeholder = "Search item ..."; // Placeholder para sugerencias
                 const itemSprite = document.createElement("img");
                 itemSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${moveset.objeto.toLowerCase()}.png`;
                 itemSprite.alt = moveset.objeto;
@@ -148,7 +148,7 @@ document.addEventListener("DOMContentLoaded", () => {
         centerCol.classList.add("col-md-4", "mb-3");
         const moves = moveset.moves.split(" - ").map(move => move.trim());
         moves.forEach((move, index) => {
-            const moveInput = createTextbox(`Movimiento ${index + 1}:`, move, false, true);
+            const moveInput = createTextbox(`Move ${index + 1}:`, move, false, true);
             centerCol.appendChild(moveInput);
         });
 
@@ -163,13 +163,13 @@ document.addEventListener("DOMContentLoaded", () => {
         rightCol.classList.add("col-md-4", "mb-3");
 
         const teratypeSelect = createDropdown(
-            "Teratipo:",
+            "TeraType:",
             ["Normal", "Fire", "Water", "Grass", "Electric", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug", "Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"],
             moveset.teratipo
         );
 
         const natureSelect = createDropdown(
-            "Naturaleza:",
+            "Nature:",
             ["Adamant", "Bold", "Brave", "Calm", "Careful", "Gentle", "Hardy", "Hasty", "Impish", "Jolly", "Lax", "Lonely", "Mild", "Modest", "Naive", "Naughty", "Quiet", "Quirky", "Rash", "Relaxed", "Sassy", "Serious", "Timid"],
             moveset.naturaleza
         );
