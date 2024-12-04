@@ -1,6 +1,3 @@
-// Archivo: js/ev-iv.js
-
-
 /**
  * Parsear la cadena de EVs en un objeto.
  * @param {string} evString - Cadena en formato "252 HP / 252 Atk / 4 Def / 0 SpA / 0 SpD / 0 Spe".

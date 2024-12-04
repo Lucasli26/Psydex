@@ -62,9 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
     checkMovesetCount();
 });
 
-
-
-
 document.addEventListener("DOMContentLoaded", () => {
     const movesets = JSON.parse(document.getElementById("movesets-data").value); // Cargamos los datos del PHP
     const pokemonContainer = document.getElementById("pokemon-container");
@@ -101,37 +98,34 @@ document.addEventListener("DOMContentLoaded", () => {
         const itemContainer = document.createElement("div");
         itemContainer.classList.add("form-group", "d-flex", "flex-column", "align-items-center", "justify-content-center");
                 
-                const itemLabel = document.createElement("label");
-                itemLabel.textContent = "Item:";
-                itemLabel.classList.add("mr-2");
+        const itemLabel = document.createElement("label");
+        itemLabel.textContent = "Item:";
+        itemLabel.classList.add("mr-2");
                 
-                // Crear el input de texto para el objeto
-                const itemInput = document.createElement("input");
-                itemInput.type = "text";
-                itemInput.value = moveset.objeto; // El valor por defecto será el objeto del moveset
-                itemInput.classList.add("form-control", "mr-2");
-                itemInput.id = "pokemon-object-input";
-                itemInput.placeholder = "Search item ..."; // Placeholder para sugerencias
-                const itemSprite = document.createElement("img");
-                itemSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${moveset.objeto.toLowerCase()}.png`;
-                itemSprite.alt = moveset.objeto;
-                itemSprite.classList.add("item-sprite");
-                itemSprite.width = 40;
-                itemSprite.height = 40;
+        // Crear el input de texto para el objeto
+        const itemInput = document.createElement("input");
+        itemInput.type = "text";
+        itemInput.value = moveset.objeto; // El valor por defecto será el objeto del moveset
+        itemInput.classList.add("form-control", "mr-2");
+        itemInput.id = "pokemon-object-input";
+        itemInput.placeholder = "Search item ..."; // Placeholder para sugerencias
+        const itemSprite = document.createElement("img");
+        itemSprite.src = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/${moveset.objeto.toLowerCase()}.png`;
+        itemSprite.alt = moveset.objeto;
+        itemSprite.classList.add("item-sprite");
+        itemSprite.width = 40;
+        itemSprite.height = 40;
                 
-                // Contenedor para las sugerencias
-                const itemSuggestionsContainer = document.createElement("ul");
-                itemSuggestionsContainer.id = "item-suggestions-container"; // ID para el contenedor de sugerencias
-                itemSuggestionsContainer.classList.add("list-group", "text-dark", "position-absolute", "w-100", "bg-white");
+        // Contenedor para las sugerencias
+        const itemSuggestionsContainer = document.createElement("ul");
+        itemSuggestionsContainer.id = "item-suggestions-container"; // ID para el contenedor de sugerencias
+        itemSuggestionsContainer.classList.add("list-group", "text-dark", "position-absolute", "w-100", "bg-white");
                 
-                // Conexión de los elementos del contenedor
-                itemContainer.appendChild(itemLabel);
-                itemContainer.appendChild(itemSprite);
-                itemContainer.appendChild(itemInput);
-                itemContainer.appendChild(itemSuggestionsContainer);
-                
-                
-                
+        // Conexión de los elementos del contenedor
+        itemContainer.appendChild(itemLabel);
+        itemContainer.appendChild(itemSprite);
+        itemContainer.appendChild(itemInput);
+        itemContainer.appendChild(itemSuggestionsContainer);
 
         leftCol.appendChild(nameInput);
         leftCol.appendChild(suggestionsContainer);
@@ -364,7 +358,6 @@ document.addEventListener("DOMContentLoaded", () => {
             yesButton.onclick = () => {
                 const url = `./php/eliminar_pokemon.php?IDPokemon=${ejemplo}`;
                 window.location.href = url; // Redirigir al script de eliminación
-                // alert (ejemplo);
             };
         
             // Botón No

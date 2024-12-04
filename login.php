@@ -1,12 +1,12 @@
 <?php
 
 // Verificar si el usuario ya está logueado
+// Redirige al usuario si ya está logueado
 if (isset($_SESSION["id"])) {
-    header("Location: index.php");  // Redirige al usuario si ya está logueado
-    exit;  // Asegúrate de usar exit para evitar que el script siga ejecutándose
+    header("Location: index.php");  
+    exit;
 }
 include("./php/conexion.php");
-// include("./php/comprobar_login.php");
 
     // Hacemos un método POST para que recibamos los valores del formulario y los transformemos a valores
     if ($_SERVER["REQUEST_METHOD"] == "POST") {

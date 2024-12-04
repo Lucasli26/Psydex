@@ -15,8 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
         suggestionsContainer = document.getElementById("suggestions-container");
         abilityContainer = document.getElementById("ability-container");
         movesContainer = document.getElementById("moves-container");
-        // objectInput = document.getElementById("pokemon-object-input");
-        // objectContainer = document.getElementById("item-suggestions-container");
 
         // Buscar todos los inputs de movimientos dinámicos
         moveInputs = Array.from(document.querySelectorAll(".move-input"));
