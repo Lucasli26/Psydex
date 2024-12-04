@@ -1,5 +1,6 @@
 <?php
 include("./conexion.php");
+include("./php/comprobar_login.php");
 
 try {
     $db = new PDO($cadena_conexion, $usuario, $clave);
