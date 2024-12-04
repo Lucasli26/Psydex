@@ -110,7 +110,7 @@ function renderTeams(teamsData) {
             yesButton.style.cursor = "pointer";
             yesButton.onclick = () => {
                 // Enviar solicitud para eliminar el equipo
-                fetch('delete_team.php', {
+                fetch('./delete_team.php', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',

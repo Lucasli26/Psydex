@@ -24,15 +24,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['teamName'])) {
         $stmtDeleteMovesets->execute();
 
         //Eliminar las relaciones en la tabla equipo_set
-        $queryDeleteEquipoSet = "DELETE FROM equipo_set WHERE equipo = (SELECT id FROM equipos WHERE nombre = :teamName)";
+        $queryDeleteEquipoSet = "DELETE FROM equipo_set WHERE equipo = (SELECT id FROM equipos WHERE nombre = :teamName and usuario = :userID)";
         $stmtDeleteEquipoSet = $pdo->prepare($queryDeleteEquipoSet);
         $stmtDeleteEquipoSet->bindParam(':teamName', $teamName, PDO::PARAM_STR);
+        $stmtDeleteEquipoSet->bindParam(':userID', $_SESSION["id"], PDO::PARAM_INT);
         $stmtDeleteEquipoSet->execute();
 
         //Eliminar el equipo de la tabla equipos
-        $queryDeleteEquipo = "DELETE FROM equipos WHERE nombre = :teamName";
+        $queryDeleteEquipo = "DELETE FROM equipos WHERE nombre = :teamName and usuario = :userID";
         $stmtDeleteEquipo = $pdo->prepare($queryDeleteEquipo);
         $stmtDeleteEquipo->bindParam(':teamName', $teamName, PDO::PARAM_STR);
+        $stmtDeleteEquipo->bindParam(':userID', $_SESSION["id"], PDO::PARAM_INT);
         $stmtDeleteEquipo->execute();
 
         // Confirmar la transacción
