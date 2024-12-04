@@ -1,6 +1,7 @@
 <?php
 include("./php/conexion.php");
 include("./php/comprobar_login.php");
+
 try {
     $db = new PDO($cadena_conexion, $usuario, $clave);
 } catch (PDOException $e) {
@@ -25,7 +26,6 @@ if ($team) {
     exit;
 }
 
-// En tu archivo PHP (por ejemplo, equipo.php)
 $query = "SELECT COUNT(*) as count FROM equipo_set WHERE equipo = ?";
 $stmt = $pdo->prepare($query);
 $stmt->execute([$teamId]);
