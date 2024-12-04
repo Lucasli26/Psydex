@@ -75,26 +75,26 @@ try {
                 ?>
             </div>
             <div class="col-5">
-              <h2 class="text-center">Registrate</h2>
-              <h5>Regístrate para crear tus equipos y ver los de los demás.</h5>
+              <h2 class="text-center">Sign Up</h2>
+              <h5>Sign Up and create your perfect team.</h5>
             </div>
             <div class="col-5">
                 <div class="ml-3 col-10">
                     <form method="post">
                         <div class="form-group">
-                            <label for="nombre">Nombre de Usuario</label>
-                            <input type="text" name="nombre" class="form-control" id="nombre" placeholder="Ingrese su nombre">
+                            <label for="nombre">Username</label>
+                            <input type="text" name="nombre" class="form-control" id="nombre" placeholder="username">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputEmail1">Correo Electrónico</label>
-                            <input type="email" name="correo" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Ingrese su correo">
+                            <label for="exampleInputEmail1">Email</label>
+                            <input type="email" name="correo" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="email">
                         </div>
                         <div class="form-group">
-                            <label for="exampleInputPassword1">Contraseña</label>
-                            <input type="password" name="con" class="form-control" id="exampleInputPassword1" placeholder="Contraseña">
+                            <label for="exampleInputPassword1">Password</label>
+                            <input type="password" name="con" class="form-control" id="exampleInputPassword1" placeholder="Password">
                         </div>
-                        <button type="submit" class="btn btn-dark border-white">Registrase</button>
-                        <a href="./login.php" class="btn btn-dark border-white">Iniciar Sesión</a>
+                        <button type="submit" class="btn btn-dark border-white">Sign Up</button>
+                        <a href="./login.php" class="btn btn-dark border-white">Log In</a>
                     </form>
                 </div>
             </div>

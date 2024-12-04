@@ -11,9 +11,10 @@ try {
 $teamName = isset($_GET['teamName']) ? htmlspecialchars($_GET['teamName']) : 'Equipo no especificado';
 // Almacenas el nombre del equipo en la sesión
 $_SESSION['equipo'] = $teamName;
-// Obtener el ID del equipo usando el nombre del equipo
-$query = $db->prepare("SELECT id FROM equipos WHERE nombre = :teamName");
-$query->bindParam(':teamName', $teamName);
+// Obtener el ID del equipo usando el nombre del equipo y el ID del usuario
+$query = $db->prepare("SELECT id FROM equipos WHERE nombre = :teamName AND usuario = :userId");
+$query->bindParam(':teamName', $teamName, PDO::PARAM_STR);
+$query->bindParam(':userId', $_SESSION['id'], PDO::PARAM_INT);
 $query->execute();
 $team = $query->fetch(PDO::FETCH_ASSOC);
 

@@ -1,12 +1,14 @@
 <?php
 include("./conexion.php");
-include("./php/comprobar_login.php");
+// include("./comprobar_login.php");
 try {
     $db = new PDO($cadena_conexion, $usuario, $clave);
 } catch (PDOException $e) {
     echo "Error con la base de datos: " . $e->getMessage();
     exit;
 }
+
+
 
 // Obtener el nombre del equipo desde la sesión
 $teamName = isset($_SESSION['equipo']) ? $_SESSION['equipo'] : null;
@@ -15,9 +17,10 @@ if (!$teamName) {
     exit;
 }
 
-// Obtener el ID del equipo usando el nombre del equipo
-$query = $db->prepare("SELECT id FROM equipos WHERE nombre = :teamName");
-$query->bindParam(':teamName', $teamName);
+// Obtener el ID del equipo usando el nombre del equipo y el ID del usuario
+$query = $db->prepare("SELECT id FROM equipos WHERE nombre = :teamName AND usuario = :userId");
+$query->bindParam(':teamName', $teamName, PDO::PARAM_STR);
+$query->bindParam(':userId', $_SESSION['id'], PDO::PARAM_INT);
 $query->execute();
 $team = $query->fetch(PDO::FETCH_ASSOC);
 
