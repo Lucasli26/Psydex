@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['teamName'])) {
 
         if ($exists > 0) {
             // El equipo ya existe
-            $mensajeError = '<p class="text-danger mt-4">Error: Ya tienes un equipo con ese nombre.</p>';
+            $mensajeError = '<p class="text-danger mt-4">Error: You have already a team with this name.</p>';
         } else {
             // Insertar el nuevo equipo en la base de datos
             $sqlInsert = "INSERT INTO equipos (nombre, fecha, usuario) VALUES (:nombre, :fecha, :usuario_id)";
@@ -53,14 +53,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['teamName'])) {
         }
     } catch (PDOException $e) {
         // Error al insertar
-        $mensajeError = '<p class="text-danger mt-4">Error al crear el equipo: ' . $e->getMessage() . '</p>';
+        $mensajeError = '<p class="text-danger mt-4">Err: ' . $e->getMessage() . '</p>';
     }
 }
 
 
 // Si hay un parámetro de éxito en la URL, mostrar el mensaje de éxito
 if (isset($_GET['success']) && $_GET['success'] == 'true') {
-    $mensajeExito = '<p class="text-success mt-4">¡Equipo creado con éxito!</p>';
+    $mensajeExito = '<p class="text-success mt-4">Success!</p>';
 }
 
 ?>
