@@ -1,6 +1,6 @@
 <?php
 include("./conexion.php");
-
+include("./php/comprobar_login.php");
 try {
     $db = new PDO($cadena_conexion, $usuario, $clave);
 } catch (PDOException $e) {
@@ -37,7 +37,7 @@ $defaultIvs = "31 HP / 31 Atk / 31 Def / 31 SpA / 31 SpD / 31 Spe";
 $defaultMoves = "Move1 - Move2 - Move3 - Move4";
 $defaultNaturaleza = "Adamant";
 $defaultObjeto = "No definido";
-$usuarioId = 1; // Reemplaza con el ID del usuario autenticado si lo tienes en la sesión
+$usuarioId = 1;
 
 try {
     // Inicia una transacción

@@ -69,100 +69,96 @@ function renderTeams(teamsData) {
         deleteButton.innerHTML = deleteSvg;
 
         // Evento para eliminar el equipo
-deleteButton.addEventListener("click", function () {
-    // Crear un contenedor para el mensaje de confirmación
-    const confirmationContainer = document.createElement("div");
-    confirmationContainer.style.position = "fixed";
-    confirmationContainer.style.top = "0";
-    confirmationContainer.style.left = "0";
-    confirmationContainer.style.width = "100%";
-    confirmationContainer.style.height = "100%";
-    confirmationContainer.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
-    confirmationContainer.style.display = "flex";
-    confirmationContainer.style.justifyContent = "center";
-    confirmationContainer.style.alignItems = "center";
-    confirmationContainer.style.zIndex = "1000";
+        deleteButton.addEventListener("click", function () {
+            // Crear un contenedor para el mensaje de confirmación
+            const confirmationContainer = document.createElement("div");
+            confirmationContainer.style.position = "fixed";
+            confirmationContainer.style.top = "0";
+            confirmationContainer.style.left = "0";
+            confirmationContainer.style.width = "100%";
+            confirmationContainer.style.height = "100%";
+            confirmationContainer.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+            confirmationContainer.style.display = "flex";
+            confirmationContainer.style.justifyContent = "center";
+            confirmationContainer.style.alignItems = "center";
+            confirmationContainer.style.zIndex = "1000";
 
-    // Crear el cuadro de confirmación
-    const confirmationBox = document.createElement("div");
-    confirmationBox.style.backgroundColor = "#fff";
-    confirmationBox.style.padding = "20px";
-    confirmationBox.style.borderRadius = "10px";
-    confirmationBox.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-    confirmationBox.style.color = "black";
-    confirmationBox.style.textAlign = "center";
-    confirmationBox.style.width = "300px";
+            // Crear el cuadro de confirmación
+            const confirmationBox = document.createElement("div");
+            confirmationBox.style.backgroundColor = "#fff";
+            confirmationBox.style.padding = "20px";
+            confirmationBox.style.borderRadius = "10px";
+            confirmationBox.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+            confirmationBox.style.color = "black";
+            confirmationBox.style.textAlign = "center";
+            confirmationBox.style.width = "300px";
 
-    // Texto de confirmación
-    const message = document.createElement("p");
-    message.textContent = "¿Estás seguro de que deseas eliminar este equipo?";
-    confirmationBox.appendChild(message);
+            // Texto de confirmación
+            const message = document.createElement("p");
+            message.textContent = "¿Estás seguro de que deseas eliminar este equipo?";
+            confirmationBox.appendChild(message);
 
-    // Botón Sí
-    const yesButton = document.createElement("button");
-    yesButton.textContent = "Sí";
-    yesButton.style.margin = "10px";
-    yesButton.style.padding = "10px 20px";
-    yesButton.style.backgroundColor = "#28a745";
-    yesButton.style.color = "#fff";
-    yesButton.style.border = "none";
-    yesButton.style.borderRadius = "5px";
-    yesButton.style.cursor = "pointer";
-    yesButton.onclick = () => {
-        // Enviar solicitud para eliminar el equipo
-        fetch('delete_team.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: `teamName=${teamName}`,
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Mensaje de éxito (puedes reemplazar esto con un mensaje en pantalla si lo prefieres)
+            // Botón Sí
+            const yesButton = document.createElement("button");
+            yesButton.textContent = "Sí";
+            yesButton.style.margin = "10px";
+            yesButton.style.padding = "10px 20px";
+            yesButton.style.backgroundColor = "#28a745";
+            yesButton.style.color = "#fff";
+            yesButton.style.border = "none";
+            yesButton.style.borderRadius = "5px";
+            yesButton.style.cursor = "pointer";
+            yesButton.onclick = () => {
+                // Enviar solicitud para eliminar el equipo
+                fetch('delete_team.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `teamName=${teamName}`,
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload(); // Recargar la página para reflejar los cambios
+                    } else {
+                        alert("Hubo un error al eliminar el equipo");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error al eliminar el equipo:", error);
+                    alert("Hubo un error al eliminar el equipo");
+                });
 
-                location.reload(); // Recargar la página para reflejar los cambios
-            } else {
-                alert("Hubo un error al eliminar el equipo");
-            }
-        })
-        .catch(error => {
-            console.error("Error al eliminar el equipo:", error);
-            alert("Hubo un error al eliminar el equipo");
+                // Eliminar el cuadro de confirmación
+                document.body.removeChild(confirmationContainer);
+            };
+
+            // Botón No
+            const noButton = document.createElement("button");
+            noButton.textContent = "No";
+            noButton.style.margin = "10px";
+            noButton.style.padding = "10px 20px";
+            noButton.style.backgroundColor = "#dc3545";
+            noButton.style.color = "#fff";
+            noButton.style.border = "none";
+            noButton.style.borderRadius = "5px";
+            noButton.style.cursor = "pointer";
+            noButton.onclick = () => {
+                // Cerrar el cuadro de confirmación
+                document.body.removeChild(confirmationContainer);
+            };
+
+            // Agregar los botones al cuadro de confirmación
+            confirmationBox.appendChild(yesButton);
+            confirmationBox.appendChild(noButton);
+
+            // Agregar el cuadro de confirmación al contenedor
+            confirmationContainer.appendChild(confirmationBox);
+
+            // Agregar el contenedor al body
+            document.body.appendChild(confirmationContainer);
         });
-
-        // Eliminar el cuadro de confirmación
-        document.body.removeChild(confirmationContainer);
-    };
-
-    // Botón No
-    const noButton = document.createElement("button");
-    noButton.textContent = "No";
-    noButton.style.margin = "10px";
-    noButton.style.padding = "10px 20px";
-    noButton.style.backgroundColor = "#dc3545";
-    noButton.style.color = "#fff";
-    noButton.style.border = "none";
-    noButton.style.borderRadius = "5px";
-    noButton.style.cursor = "pointer";
-    noButton.onclick = () => {
-        // Cerrar el cuadro de confirmación
-        document.body.removeChild(confirmationContainer);
-    };
-
-    // Agregar los botones al cuadro de confirmación
-    confirmationBox.appendChild(yesButton);
-    confirmationBox.appendChild(noButton);
-
-    // Agregar el cuadro de confirmación al contenedor
-    confirmationContainer.appendChild(confirmationBox);
-
-    // Agregar el contenedor al body
-    document.body.appendChild(confirmationContainer);
-});
-
-
 
         // Botón para añadir un Pokémon al equipo
         const addPokemonButton = document.createElement("button");

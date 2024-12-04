@@ -1,5 +1,6 @@
 <?php
 include("./conexion.php");
+include("./php/comprobar_login.php");
 
 try {
     $db = new PDO($cadena_conexion, $usuario, $clave);
@@ -43,20 +44,6 @@ if ($team) {
     echo "No se encontró el equipo.<br>";
     exit;
 }
-
-// // Obtener el id del moveset asociado al equipo mediante la tabla intermedia equipo-set
-// $query = $db->prepare("SELECT es.moveset FROM equipo_set es WHERE es.equipo = :teamId");
-// $query->bindParam(':teamId', $teamId);
-// $query->execute();
-// $equipoSet = $query->fetch(PDO::FETCH_ASSOC);
-
-// if ($equipoSet) {
-//     $movesetId = $equipoSet['moveset'];
-//     echo "El ID del moveset relacionado con el equipo es: " . $movesetId . "<br>";
-// } else {
-//     echo "No se encontró el moveset relacionado con el equipo.<br>";
-//     exit;
-// }
 
 // Actualizar el moveset en la base de datos para el moveset encontrado
 $query = $db->prepare("

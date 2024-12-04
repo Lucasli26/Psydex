@@ -42,26 +42,26 @@ include("./php/cabezera.php");
 
 <div class="filters-container d-flex justify-content-center align-items-center mt-3">
     <div class="form-group mx-2">
-        <label for="filterOrder" class="text-white">Orden:</label>
+        <label for="filterOrder" class="text-white">Order:</label>
         <select id="filterOrder" class="form-control">
-            <option value="number">Número</option>
-            <option value="name">Alfabético</option>
+            <option value="number">Nº Dex</option>
+            <option value="name">Alphabetically</option>
         </select>
     </div>
     <div class="form-group mx-2">
-        <label for="filterType" class="text-white">Tipo:</label>
+        <label for="filterType" class="text-white">Type:</label>
         <select id="filterType" class="form-control">
-            <option value="all">Todos</option>
+            <option value="all">All</option>
         </select>
     </div>
-    <button id="applyFilters" class="btn btn-warning mx-2">Aplicar</button>
+    <button id="applyFilters" class="btn btn-warning mx-2">Apply</button>
 </div>
 
 <div class="d-flex-search-container mt-2">
-  <div class="d-flex ">
-    <input id="searchInput" type="text" class="form-control search-input" placeholder="Buscar Pokémon por nombre o ID">
-    <button id="searchButton" class="btn btn-primary ms-2">Buscar</button>
-    <button id="clearSearchButton" class="btn btn-secondary ms-2">Limpiar</button>
+  <div class="d-flex justify-content-center align-items-center">
+    <input id="searchInput" type="text" class="form-control search-input" placeholder="Search for name or ID">
+    <button id="searchButton" class="btn btn-primary m-2 ms-2">Search</button>
+    <button id="clearSearchButton" class="btn btn-secondary ms-2">Clear</button>
   </div>
   <div id="autocomplete-container"></div>
 </div>

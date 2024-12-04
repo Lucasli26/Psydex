@@ -132,18 +132,18 @@ try {
 
         <!-- Formulario para crear un nuevo equipo -->
         <section class="mt-4">
-            <h3 class="text-light">Crear un nuevo equipo</h3>
+            <h3 class="text-light m-3 ">Make your own team</h3>
             <form action="user.php" method="POST" class="form-inline">
-                <div class="form-group mx-sm-3 mb-2">
-                    <input type="text" class="form-control" id="teamName" name="teamName" placeholder="Nombre del equipo" required>
+                <div class="form-group mx-sm-3">
+                    <input type="text" class="form-control" id="teamName" name="teamName" placeholder="Name from the team" required>
                 </div>
-                <button type="submit" class="btn btn-warning mb-2">Crear Equipo</button>
+                <button type="submit" class="btn btn-warning">New Team</button>
             </form>
         </section>
 
         <!-- Contenedor para los equipos -->
         <section>
-            <div id="team-previews" class="d-flex flex-wrap justify-content-center mt-4">
+            <div id="team-previews" class="d-flex flex-wrap justify-content-center">
 
             </div>
         </section>

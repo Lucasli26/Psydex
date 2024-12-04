@@ -4,8 +4,8 @@ const filterType = document.getElementById("filterType");
 const applyFiltersButton = document.getElementById("applyFilters");
 
 // Lista completa de Pokémon y tipos
-let filteredPokemonList = []; // Cambié el nombre de allPokemon
-let availableTypes = []; // Cambié el nombre de allTypes
+let filteredPokemonList = []; 
+let availableTypes = [];
 
 // Función para inicializar la lista de Pokémon y los tipos
 async function initializeFilters() {

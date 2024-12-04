@@ -1,5 +1,5 @@
 <?php
-
+include("./php/comprobar_login.php");
 $usuario_id = $User["id"]; // ID del usuario logueado
 
 // Consulta para obtener los equipos y Pokémon

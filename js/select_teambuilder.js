@@ -15,8 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
         suggestionsContainer = document.getElementById("suggestions-container");
         abilityContainer = document.getElementById("ability-container");
         movesContainer = document.getElementById("moves-container");
-        // objectInput = document.getElementById("pokemon-object-input");
-        // objectContainer = document.getElementById("item-suggestions-container");
 
         // Buscar todos los inputs de movimientos dinámicos
         moveInputs = Array.from(document.querySelectorAll(".move-input"));
@@ -111,7 +109,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function displaySuggestions(pokemonList) {
         suggestionsContainer.innerHTML = "";
         if (pokemonList.length === 0) {
-            suggestionsContainer.innerHTML = "<li>No se encontraron Pokémon</li>";
+            suggestionsContainer.innerHTML = "<li>Not found this Pokémon</li>";
             return;
         }
         pokemonList.forEach(pokemon => {
